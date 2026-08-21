@@ -214,20 +214,28 @@ export function CommissionsTable({ commissions }: { commissions: Commission[] })
           <TabsTrigger value="rejected">Rejected ({rejected.length})</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pending" className="mt-6">
-          {renderCommissionsTable(pending, true)}
+        <TabsContent value="pending">
+          <div className="mt-6">
+            {renderCommissionsTable(pending, true)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="approved" className="mt-6">
-          {renderCommissionsTable(approved)}
+        <TabsContent value="approved">
+          <div className="mt-6">
+            {renderCommissionsTable(approved)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="paid" className="mt-6">
-          {renderCommissionsTable(paid)}
+        <TabsContent value="paid">
+          <div className="mt-6">
+            {renderCommissionsTable(paid)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="rejected" className="mt-6">
-          {renderCommissionsTable(rejected)}
+        <TabsContent value="rejected">
+          <div className="mt-6">
+            {renderCommissionsTable(rejected)}
+          </div>
         </TabsContent>
       </Tabs>
 

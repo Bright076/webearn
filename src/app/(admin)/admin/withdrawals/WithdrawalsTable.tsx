@@ -289,24 +289,34 @@ export function WithdrawalsTable({ withdrawals }: { withdrawals: Withdrawal[] })
           <TabsTrigger value="rejected">Rejected ({rejected.length})</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="mt-6">
-          {renderWithdrawalsTable(all)}
+        <TabsContent value="all">
+          <div className="mt-6">
+            {renderWithdrawalsTable(all)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="pending" className="mt-6">
-          {renderWithdrawalsTable(pending)}
+        <TabsContent value="pending">
+          <div className="mt-6">
+            {renderWithdrawalsTable(pending)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="approved" className="mt-6">
-          {renderWithdrawalsTable(approved)}
+        <TabsContent value="approved">
+          <div className="mt-6">
+            {renderWithdrawalsTable(approved)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="paid" className="mt-6">
-          {renderWithdrawalsTable(paid)}
+        <TabsContent value="paid">
+          <div className="mt-6">
+            {renderWithdrawalsTable(paid)}
+          </div>
         </TabsContent>
 
-        <TabsContent value="rejected" className="mt-6">
-          {renderWithdrawalsTable(rejected)}
+        <TabsContent value="rejected">
+          <div className="mt-6">
+            {renderWithdrawalsTable(rejected)}
+          </div>
         </TabsContent>
       </Tabs>
 
