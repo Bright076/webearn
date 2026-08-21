@@ -94,39 +94,54 @@ export default async function DashboardMarketplacePage() {
               {services.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white border border-border rounded-lg p-6"
+                  className="bg-white border border-border rounded-lg overflow-hidden"
                 >
-                  <h3 className="text-xl font-heading font-semibold mb-4">
-                    {product.name}
-                  </h3>
-                  
-                  <div className="space-y-2 mb-6 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted">Price:</span>
-                      <span className="font-semibold">
-                        ${product.price.toLocaleString()}
-                      </span>
+                  {/* Thumbnail */}
+                  {product.thumbnail_url ? (
+                    <img
+                      src={product.thumbnail_url}
+                      alt={product.name}
+                      className="w-full aspect-video object-cover"
+                    />
+                  ) : (
+                    <div className="w-full aspect-video bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                      <span className="text-muted">No preview</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted">Your Commission:</span>
-                      <span className="font-semibold text-accent">
-                        {formatCommission(product.commission_type, product.commission_value)}
-                      </span>
-                    </div>
-                    {product.delivery_days && (
+                  )}
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-heading font-semibold mb-4">
+                      {product.name}
+                    </h3>
+                    
+                    <div className="space-y-2 mb-6 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-muted">Delivery:</span>
+                        <span className="text-muted">Price:</span>
                         <span className="font-semibold">
-                          {product.delivery_days} {product.delivery_days === 1 ? 'day' : 'days'}
+                          ${product.price.toLocaleString()}
                         </span>
                       </div>
-                    )}
-                  </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted">Your Commission:</span>
+                        <span className="font-semibold text-accent">
+                          {formatCommission(product.commission_type, product.commission_value)}
+                        </span>
+                      </div>
+                      {product.delivery_days && (
+                        <div className="flex justify-between">
+                          <span className="text-muted">Delivery:</span>
+                          <span className="font-semibold">
+                            {product.delivery_days} {product.delivery_days === 1 ? 'day' : 'days'}
+                          </span>
+                        </div>
+                      )}
+                    </div>
 
-                  <PromoteButton
-                    productSlug={product.slug}
-                    className="w-full"
-                  />
+                    <PromoteButton
+                      productSlug={product.slug}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               ))}
             </div>

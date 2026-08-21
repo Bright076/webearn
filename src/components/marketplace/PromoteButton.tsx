@@ -30,26 +30,42 @@ export function PromoteButton({ productSlug, variant = "default", className }: P
   const { addToast } = useToast();
 
   const handlePromote = async () => {
-    // Check if user is logged in
-    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      // Check if user is logged in
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-    if (!user) {
-      // Redirect to sign up if not logged in
-      router.push("/sign-up");
-      return;
-    }
+      if (authError || !user) {
+        console.log("User not authenticated, redirecting to sign-up");
+        router.push("/sign-up");
+        return;
+      }
 
-    // Fetch affiliate code from profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("affiliate_code")
-      .eq("id", user.id)
-      .single();
+      // Fetch affiliate code from profile
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("affiliate_code")
+        .eq("id", user.id)
+        .single();
 
-    if (profile?.affiliate_code) {
+      if (profileError) {
+        console.error("Error fetching profile:", profileError);
+        addToast("Error loading your affiliate code. Please try again.", "error");
+        return;
+      }
+
+      if (!profile?.affiliate_code) {
+        console.error("No affiliate code found");
+        addToast("No affiliate code found. Please contact support.", "error");
+        return;
+      }
+
       const link = `${window.location.origin}/api/referral?product=${productSlug}&ref=${profile.affiliate_code}`;
+      console.log("Generated referral link:", link);
       setReferralLink(link);
       setDialogOpen(true);
+    } catch (error) {
+      console.error("Error in handlePromote:", error);
+      addToast("An error occurred. Please try again.", "error");
     }
   };
 

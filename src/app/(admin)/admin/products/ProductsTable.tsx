@@ -314,7 +314,7 @@ export function ProductsTable({
             <thead className="bg-secondary/50 border-b border-border">
               <tr>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-foreground">
-                  Name
+                  Product
                 </th>
                 <th className="text-left px-6 py-4 text-sm font-semibold text-foreground">
                   Category
@@ -337,9 +337,22 @@ export function ProductsTable({
               {products.map((product) => (
                 <tr key={product.id} className="hover:bg-secondary/30 transition-colors">
                   <td className="px-6 py-4">
-                    <div>
-                      <p className="font-semibold text-foreground">{product.name}</p>
-                      <p className="text-sm text-muted">{product.slug}</p>
+                    <div className="flex items-center gap-3">
+                      {product.thumbnail_url ? (
+                        <img
+                          src={product.thumbnail_url}
+                          alt={product.name}
+                          className="w-16 h-16 object-cover rounded-lg border border-border"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 bg-secondary/50 rounded-lg border border-border flex items-center justify-center">
+                          <span className="text-xs text-muted">No image</span>
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-foreground">{product.name}</p>
+                        <p className="text-sm text-muted">{product.slug}</p>
+                      </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-sm text-foreground">
