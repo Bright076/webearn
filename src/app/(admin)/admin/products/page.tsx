@@ -5,7 +5,7 @@ export default async function ProductsPage() {
   const adminClient = createAdminClient();
 
   // Fetch all products (including inactive)
-  const { data: products } = await adminClient
+  const { data: rawProducts } = await adminClient
     .from("products")
     .select(`
       id,
@@ -27,6 +27,14 @@ export default async function ProductsPage() {
     `)
     .order("created_at", { ascending: false });
 
+  // Transform the data to match the expected type
+  const products = rawProducts?.map(product => ({
+    ...product,
+    product_categories: Array.isArray(product.product_categories) 
+      ? product.product_categories[0] 
+      : product.product_categories
+  })) || [];
+
   // Fetch categories for the form
   const { data: categories } = await adminClient
     .from("product_categories")
@@ -47,7 +55,7 @@ export default async function ProductsPage() {
       </div>
 
       <ProductsTable
-        products={products || []}
+        products={products}
         categories={categories || []}
       />
     </div>
