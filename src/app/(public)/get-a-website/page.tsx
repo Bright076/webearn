@@ -4,6 +4,7 @@ import { MarketingNav } from "@/components/marketing/nav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/toast";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +24,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 
 export default function GetAWebsitePage() {
+  const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -51,14 +53,19 @@ export default function GetAWebsitePage() {
       const result = await response.json();
 
       if (!response.ok) {
-        setErrorMessage(result.error || "Failed to submit request");
+        const errorMsg = result.details || result.error || "Failed to submit request";
+        setErrorMessage(errorMsg);
+        addToast(errorMsg, "error");
         setIsLoading(false);
         return;
       }
 
       setIsSuccess(true);
+      addToast("Request submitted successfully!", "success");
     } catch (error) {
-      setErrorMessage("An error occurred. Please try again.");
+      const errorMsg = "An error occurred. Please try again.";
+      setErrorMessage(errorMsg);
+      addToast(errorMsg, "error");
       setIsLoading(false);
     }
   };

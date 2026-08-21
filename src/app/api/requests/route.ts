@@ -65,8 +65,14 @@ export async function POST(request: NextRequest) {
 
     if (error) {
       console.error("Error creating client request:", error);
+      console.error("Error details:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
       return NextResponse.json(
-        { error: "Failed to submit request" },
+        { error: "Failed to submit request", details: error.message },
         { status: 500 }
       );
     }
