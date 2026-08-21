@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -12,61 +11,30 @@ import {
   DialogDescription,
   DialogClose,
 } from "@/components/ui/dialog";
-import { createClient } from "@/lib/supabase/client";
 import { Copy, Check } from "lucide-react";
 
 interface PromoteButtonProps {
   productSlug: string;
+  affiliateCode: string;
   variant?: "default" | "outline";
   className?: string;
 }
 
-export function PromoteButton({ productSlug, variant = "default", className }: PromoteButtonProps) {
+export function PromoteButton({ productSlug, affiliateCode, variant = "default", className }: PromoteButtonProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [referralLink, setReferralLink] = useState("");
   const [copied, setCopied] = useState(false);
-  const router = useRouter();
-  const supabase = createClient();
   const { addToast } = useToast();
 
-  const handlePromote = async () => {
-    try {
-      // Check if user is logged in
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-      if (authError || !user) {
-        console.log("User not authenticated, redirecting to sign-up");
-        router.push("/sign-up");
-        return;
-      }
-
-      // Fetch affiliate code from profile
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("affiliate_code")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError) {
-        console.error("Error fetching profile:", profileError);
-        addToast("Error loading your affiliate code. Please try again.", "error");
-        return;
-      }
-
-      if (!profile?.affiliate_code) {
-        console.error("No affiliate code found");
-        addToast("No affiliate code found. Please contact support.", "error");
-        return;
-      }
-
-      const link = `${window.location.origin}/api/referral?product=${productSlug}&ref=${profile.affiliate_code}`;
-      console.log("Generated referral link:", link);
-      setReferralLink(link);
-      setDialogOpen(true);
-    } catch (error) {
-      console.error("Error in handlePromote:", error);
-      addToast("An error occurred. Please try again.", "error");
+  const handlePromote = () => {
+    if (!affiliateCode) {
+      addToast("No affiliate code found. Please contact support.", "error");
+      return;
     }
+
+    const link = `${window.location.origin}/api/referral?product=${productSlug}&ref=${affiliateCode}`;
+    setReferralLink(link);
+    setDialogOpen(true);
   };
 
   const copyToClipboard = async () => {

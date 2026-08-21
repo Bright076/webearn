@@ -3,6 +3,8 @@ import { PromoteButton } from "@/components/marketplace/PromoteButton";
 import { Button } from "@/components/ui/button";
 import { PackageOpen } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 interface Product {
   id: string;
@@ -24,7 +26,23 @@ interface Category {
 }
 
 export default async function DashboardMarketplacePage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/sign-in");
+  }
+
   const adminClient = createAdminClient();
+
+  // Fetch user's affiliate code
+  const { data: profile } = await adminClient
+    .from("profiles")
+    .select("affiliate_code")
+    .eq("id", user.id)
+    .single();
+
+  const affiliateCode = profile?.affiliate_code || "";
 
   // Fetch categories
   const { data: categories } = await adminClient
@@ -101,10 +119,10 @@ export default async function DashboardMarketplacePage() {
                     <img
                       src={product.thumbnail_url}
                       alt={product.name}
-                      className="w-full aspect-video object-cover"
+                      className="w-full h-48 object-contain bg-secondary/20"
                     />
                   ) : (
-                    <div className="w-full aspect-video bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                    <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
                       <span className="text-muted">No preview</span>
                     </div>
                   )}
@@ -139,6 +157,7 @@ export default async function DashboardMarketplacePage() {
 
                     <PromoteButton
                       productSlug={product.slug}
+                      affiliateCode={affiliateCode}
                       className="w-full"
                     />
                   </div>
@@ -169,10 +188,10 @@ export default async function DashboardMarketplacePage() {
                     <img
                       src={product.thumbnail_url}
                       alt={product.name}
-                      className="w-full aspect-video object-cover"
+                      className="w-full h-48 object-contain bg-secondary/20"
                     />
                   ) : (
-                    <div className="w-full aspect-video bg-muted/20 flex items-center justify-center">
+                    <div className="w-full h-48 bg-muted/20 flex items-center justify-center">
                       <span className="text-muted">No preview</span>
                     </div>
                   )}
@@ -223,6 +242,7 @@ export default async function DashboardMarketplacePage() {
                       )}
                       <PromoteButton
                         productSlug={product.slug}
+                        affiliateCode={affiliateCode}
                         className="flex-1"
                       />
                     </div>
