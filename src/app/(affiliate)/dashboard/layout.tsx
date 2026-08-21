@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { SignOutButton } from "@/components/SignOutButton";
+import { MobileMenuButton } from "@/components/MobileMenuButton";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -45,10 +46,16 @@ export default async function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row">
+      {/* Mobile Header */}
+      <header className="md:hidden bg-sidebar px-4 py-3 flex items-center justify-between border-b border-white/10">
+        <Logo variant="light" size="sm" />
+        <MobileMenuButton sidebarId="mobile-sidebar" />
+      </header>
+
       {/* Sidebar */}
-      <aside className="w-64 bg-sidebar flex-shrink-0 flex flex-col">
-        <div className="p-6 border-b border-white/10">
+      <aside id="mobile-sidebar" className="hidden md:flex w-full md:w-64 bg-sidebar flex-shrink-0 flex-col">
+        <div className="hidden md:block p-6 border-b border-white/10">
           <Logo variant="light" size="sm" />
         </div>
 
@@ -74,9 +81,9 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Bar */}
-        <header className="bg-white border-b border-border px-8 py-4">
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Bar - Desktop Only */}
+        <header className="hidden md:block bg-white border-b border-border px-4 md:px-8 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-sm text-muted">Welcome back</h2>
@@ -88,7 +95,7 @@ export default async function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 p-8 overflow-auto">{children}</main>
+        <main className="flex-1 p-4 md:p-8 overflow-auto">{children}</main>
       </div>
     </div>
   );

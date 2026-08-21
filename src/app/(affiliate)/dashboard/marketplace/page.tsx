@@ -47,7 +47,7 @@ export default async function DashboardMarketplacePage() {
   // Separate products by category slug
   const services = products?.filter((p) => {
     const category = p.category_id ? categoryMap.get(p.category_id) : null;
-    return category?.slug === "website-services";
+    return category?.slug === "web-services";
   }) || [];
   
   const templates = products?.filter((p) => {
