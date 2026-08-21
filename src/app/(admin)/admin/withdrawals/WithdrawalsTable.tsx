@@ -39,7 +39,6 @@ interface Withdrawal {
 }
 
 export function WithdrawalsTable({ withdrawals }: { withdrawals: Withdrawal[] }) {
-  const [activeTab, setActiveTab] = useState("all");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedWithdrawal, setSelectedWithdrawal] = useState<Withdrawal | null>(null);
@@ -281,7 +280,7 @@ export function WithdrawalsTable({ withdrawals }: { withdrawals: Withdrawal[] })
   return (
     <div className="space-y-4">
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs defaultValue="all">
         <TabsList>
           <TabsTrigger value="all">All ({all.length})</TabsTrigger>
           <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>

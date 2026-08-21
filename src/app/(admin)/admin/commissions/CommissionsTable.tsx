@@ -40,7 +40,6 @@ interface Commission {
 }
 
 export function CommissionsTable({ commissions }: { commissions: Commission[] }) {
-  const [activeTab, setActiveTab] = useState("pending");
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
   const [selectedCommission, setSelectedCommission] = useState<Commission | null>(null);
   const [rejectionReason, setRejectionReason] = useState("");
@@ -207,7 +206,7 @@ export function CommissionsTable({ commissions }: { commissions: Commission[] })
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs defaultValue="pending">
         <TabsList>
           <TabsTrigger value="pending">Pending ({pending.length})</TabsTrigger>
           <TabsTrigger value="approved">Approved ({approved.length})</TabsTrigger>
