@@ -143,7 +143,7 @@ export default function ProfilePage() {
             </div>
             <Button
               variant="outline"
-              size="icon"
+              size="sm"
               onClick={copyAffiliateCode}
               className="flex-shrink-0"
             >
