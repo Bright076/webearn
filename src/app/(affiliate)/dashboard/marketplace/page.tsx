@@ -81,7 +81,7 @@ export default async function DashboardMarketplacePage() {
         </TabsList>
 
         {/* Services Tab */}
-        <TabsContent value="services" className="mt-6">
+        <TabsContent value="services">
           {services.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white border border-border rounded-lg">
               <PackageOpen className="w-16 h-16 text-muted mb-4" />
@@ -134,7 +134,7 @@ export default async function DashboardMarketplacePage() {
         </TabsContent>
 
         {/* Templates Tab */}
-        <TabsContent value="templates" className="mt-6">
+        <TabsContent value="templates">
           {templates.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 bg-white border border-border rounded-lg">
               <PackageOpen className="w-16 h-16 text-muted mb-4" />
