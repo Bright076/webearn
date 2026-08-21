@@ -15,7 +15,7 @@ import { Copy, Check } from "lucide-react";
 
 interface PromoteButtonProps {
   productSlug: string;
-  affiliateCode: string;
+  affiliateCode?: string;
   variant?: "default" | "outline";
   className?: string;
 }
@@ -28,7 +28,8 @@ export function PromoteButton({ productSlug, affiliateCode, variant = "default",
 
   const handlePromote = () => {
     if (!affiliateCode) {
-      addToast("No affiliate code found. Please contact support.", "error");
+      // Redirect to sign up if no affiliate code (not logged in)
+      window.location.href = "/sign-up";
       return;
     }
 

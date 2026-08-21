@@ -105,43 +105,58 @@ export default async function MarketplacePage() {
                 </p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {services.map((product) => (
                   <div
                     key={product.id}
-                    className="bg-white border border-border rounded-lg p-6"
+                    className="bg-white border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <h3 className="text-xl font-heading font-semibold mb-4">
-                      {product.name}
-                    </h3>
-                    
-                    <div className="space-y-2 mb-6 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted">Price:</span>
-                        <span className="font-semibold">
-                          ${product.price.toLocaleString()}
-                        </span>
+                    {/* Thumbnail */}
+                    {product.thumbnail_url ? (
+                      <img
+                        src={product.thumbnail_url}
+                        alt={product.name}
+                        className="w-full h-48 object-contain bg-secondary/20"
+                      />
+                    ) : (
+                      <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                        <span className="text-muted">No preview</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted">Commission:</span>
-                        <span className="font-semibold text-accent">
-                          {formatCommission(product.commission_type, product.commission_value)}
-                        </span>
-                      </div>
-                      {product.delivery_days && (
+                    )}
+
+                    <div className="p-6">
+                      <h3 className="text-xl font-heading font-semibold mb-4">
+                        {product.name}
+                      </h3>
+                      
+                      <div className="space-y-2 mb-6 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-muted">Delivery:</span>
+                          <span className="text-muted">Price:</span>
                           <span className="font-semibold">
-                            {product.delivery_days} {product.delivery_days === 1 ? 'day' : 'days'}
+                            ${product.price.toLocaleString()}
                           </span>
                         </div>
-                      )}
-                    </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted">Commission:</span>
+                          <span className="font-semibold text-accent">
+                            {formatCommission(product.commission_type, product.commission_value)}
+                          </span>
+                        </div>
+                        {product.delivery_days && (
+                          <div className="flex justify-between">
+                            <span className="text-muted">Delivery:</span>
+                            <span className="font-semibold">
+                              {product.delivery_days} {product.delivery_days === 1 ? 'day' : 'days'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
 
-                    <PromoteButton
-                      productSlug={product.slug}
-                      className="w-full"
-                    />
+                      <PromoteButton
+                        productSlug={product.slug}
+                        className="w-full"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -158,21 +173,21 @@ export default async function MarketplacePage() {
                 </p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {templates.map((product) => (
                   <div
                     key={product.id}
-                    className="bg-white border border-border rounded-lg overflow-hidden"
+                    className="bg-white border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                   >
                     {/* Thumbnail */}
                     {product.thumbnail_url ? (
                       <img
                         src={product.thumbnail_url}
                         alt={product.name}
-                        className="w-full aspect-video object-cover"
+                        className="w-full h-48 object-contain bg-secondary/20"
                       />
                     ) : (
-                      <div className="w-full aspect-video bg-muted/20 flex items-center justify-center">
+                      <div className="w-full h-48 bg-muted/20 flex items-center justify-center">
                         <span className="text-muted">No preview</span>
                       </div>
                     )}

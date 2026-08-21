@@ -108,11 +108,11 @@ export default async function DashboardMarketplacePage() {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {services.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white border border-border rounded-lg overflow-hidden"
+                  className="bg-white border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                 >
                   {/* Thumbnail */}
                   {product.thumbnail_url ? (
@@ -177,11 +177,11 @@ export default async function DashboardMarketplacePage() {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {templates.map((product) => (
                 <div
                   key={product.id}
-                  className="bg-white border border-border rounded-lg overflow-hidden"
+                  className="bg-white border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                 >
                   {/* Thumbnail */}
                   {product.thumbnail_url ? (
