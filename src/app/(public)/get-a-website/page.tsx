@@ -196,11 +196,11 @@ export default function GetAWebsitePage() {
                   className="mt-1.5 flex h-10 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 >
                   <option value="">Select a range</option>
-                  <option value="under-100k">Under ₦100,000</option>
-                  <option value="100k-300k">₦100,000 - ₦300,000</option>
-                  <option value="300k-500k">₦300,000 - ₦500,000</option>
-                  <option value="500k-1m">₦500,000 - ₦1,000,000</option>
-                  <option value="over-1m">Over ₦1,000,000</option>
+                  <option value="under-500">Under $500</option>
+                  <option value="500-1000">$500 - $1,000</option>
+                  <option value="1000-2000">$1,000 - $2,000</option>
+                  <option value="2000-5000">$2,000 - $5,000</option>
+                  <option value="over-5000">Over $5,000</option>
                 </select>
                 {errors.budget && (
                   <p className="text-sm text-red-600 mt-1">{errors.budget.message}</p>

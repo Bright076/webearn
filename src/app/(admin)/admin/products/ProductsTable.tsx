@@ -42,7 +42,7 @@ const productSchema = z.object({
   commissionValue: z.string().min(1, "Commission value is required"),
   deliveryDays: z.string().optional(),
   demoUrl: z.string().url().optional().or(z.literal("")),
-  thumbnailUrl: z.string().url().optional().or(z.literal("")),
+  thumbnailUrl: z.string().optional(), // Changed from url() to allow file uploads
   isActive: z.boolean(),
 });
 
@@ -87,6 +87,8 @@ export function ProductsTable({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string>("");
 
   const {
     register,
@@ -118,6 +120,8 @@ export function ProductsTable({
 
   const handleAddProduct = () => {
     setEditingProduct(null);
+    setThumbnailFile(null);
+    setThumbnailPreview("");
     reset({
       name: "",
       slug: "",
@@ -136,6 +140,8 @@ export function ProductsTable({
 
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
+    setThumbnailFile(null);
+    setThumbnailPreview(product.thumbnail_url || "");
     reset({
       name: product.name,
       slug: product.slug,
@@ -152,9 +158,66 @@ export function ProductsTable({
     setIsDialogOpen(true);
   };
 
+  const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setThumbnailFile(file);
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setThumbnailPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadThumbnail = async (file: File): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `product-thumbnails/${fileName}`;
+
+      // Upload to Supabase Storage
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Upload error:', uploadError);
+        return null;
+      }
+
+      // Get public URL
+      const { data } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading thumbnail:', error);
+      return null;
+    }
+  };
+
   const onSubmit = async (data: ProductFormData) => {
     setIsSubmitting(true);
     setErrorMessage("");
+
+    // Upload thumbnail if a new file was selected
+    let thumbnailUrl = data.thumbnailUrl;
+    if (thumbnailFile) {
+      const uploadedUrl = await uploadThumbnail(thumbnailFile);
+      if (uploadedUrl) {
+        thumbnailUrl = uploadedUrl;
+      } else {
+        setErrorMessage("Failed to upload thumbnail image");
+        setIsSubmitting(false);
+        return;
+      }
+    }
 
     const formData = {
       name: data.name,
@@ -166,7 +229,7 @@ export function ProductsTable({
       commissionValue: parseFloat(data.commissionValue),
       deliveryDays: data.deliveryDays ? parseInt(data.deliveryDays) : undefined,
       demoUrl: data.demoUrl,
-      thumbnailUrl: data.thumbnailUrl,
+      thumbnailUrl: thumbnailUrl,
       isActive: data.isActive,
     };
 
@@ -483,18 +546,26 @@ export function ProductsTable({
               )}
 
               <div className="col-span-2">
-                <Label htmlFor="thumbnailUrl">Thumbnail URL</Label>
+                <Label htmlFor="thumbnail">Product Thumbnail</Label>
                 <Input
-                  id="thumbnailUrl"
-                  type="url"
-                  {...register("thumbnailUrl")}
-                  placeholder="https://example.com/image.jpg"
+                  id="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailChange}
                   className="mt-1.5"
                 />
-                {errors.thumbnailUrl && (
-                  <p className="text-sm text-red-600 mt-1">
-                    {errors.thumbnailUrl.message}
-                  </p>
+                <p className="text-xs text-muted mt-1">
+                  Upload an image (JPG, PNG, or WebP recommended)
+                </p>
+                {thumbnailPreview && (
+                  <div className="mt-3">
+                    <p className="text-sm text-muted mb-2">Preview:</p>
+                    <img
+                      src={thumbnailPreview}
+                      alt="Thumbnail preview"
+                      className="w-full max-w-md h-48 object-cover rounded-lg border border-border"
+                    />
+                  </div>
                 )}
               </div>
 

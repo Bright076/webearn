@@ -216,7 +216,7 @@ export default function WithdrawalsPage() {
               No Withdrawals Yet
             </p>
             <p className="text-muted text-center max-w-md mb-6">
-              Once you have ₦5,000 or more in approved commissions, you can request a withdrawal
+              Once you have $50 or more in approved commissions, you can request a withdrawal
             </p>
           </div>
         </div>

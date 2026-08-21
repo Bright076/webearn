@@ -83,7 +83,7 @@ export default async function EarningsPage() {
             <h3 className="text-sm font-medium text-muted">Total Earned</h3>
           </div>
           <p className="text-2xl font-heading font-bold text-foreground">
-            ₦{totalEarned.toLocaleString()}
+            ${totalEarned.toLocaleString()}
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default async function EarningsPage() {
             <h3 className="text-sm font-medium text-muted">Pending</h3>
           </div>
           <p className="text-2xl font-heading font-bold text-foreground">
-            ₦{pendingTotal.toLocaleString()}
+            ${pendingTotal.toLocaleString()}
           </p>
         </div>
 
@@ -107,7 +107,7 @@ export default async function EarningsPage() {
             <h3 className="text-sm font-medium text-muted">Approved/Paid</h3>
           </div>
           <p className="text-2xl font-heading font-bold text-foreground">
-            ₦{approvedTotal.toLocaleString()}
+            ${approvedTotal.toLocaleString()}
           </p>
         </div>
       </div>
@@ -176,7 +176,7 @@ export default async function EarningsPage() {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <span className="font-semibold text-foreground">
-                        ₦{Number(commission.amount).toLocaleString()}
+                        ${Number(commission.amount).toLocaleString()}
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -200,7 +200,7 @@ export default async function EarningsPage() {
               {commissions.length === 1 ? "commission" : "commissions"}
             </p>
             <p className="text-sm font-semibold text-foreground">
-              Total Amount: ₦{totalEarned.toLocaleString()}
+              Total Amount: ${totalEarned.toLocaleString()}
             </p>
           </div>
         </div>

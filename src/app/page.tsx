@@ -187,9 +187,9 @@ export default function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: "Landing Page", price: "₦150,000", commission: "₦45,000", delivery: "7 days" },
-              { name: "Business Website", price: "₦350,000", commission: "₦105,000", delivery: "14 days" },
-              { name: "E-Commerce Store", price: "₦750,000", commission: "₦225,000", delivery: "21 days" },
+              { name: "Landing Page", price: "$500", commission: "$150", delivery: "7 days" },
+              { name: "Business Website", price: "$1,200", commission: "$360", delivery: "14 days" },
+              { name: "E-Commerce Store", price: "$2,500", commission: "$750", delivery: "21 days" },
             ].map((service, idx) => (
               <div key={idx} className="bg-white border border-border rounded-lg p-6">
                 <h3 className="text-xl font-heading font-semibold mb-4">
@@ -231,9 +231,9 @@ export default function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { name: "Restaurant Template", price: "₦80,000", commission: "₦24,000" },
-              { name: "Portfolio Template", price: "₦60,000", commission: "₦18,000" },
-              { name: "Church Template", price: "₦100,000", commission: "₦30,000" },
+              { name: "Restaurant Template", price: "$300", commission: "$90" },
+              { name: "Portfolio Template", price: "$250", commission: "$75" },
+              { name: "Church Template", price: "$400", commission: "$120" },
             ].map((template, idx) => (
               <div key={idx} className="bg-white border border-border rounded-lg overflow-hidden">
                 <div className="bg-muted/20 aspect-video flex items-center justify-center text-muted">
@@ -287,7 +287,7 @@ export default function HomePage() {
                 role: "Restaurant Owner",
               },
               {
-                quote: "I've earned over ₦500,000 in commissions just by sharing with my network. Amazing opportunity!",
+                quote: "I've earned over $1,500 in commissions just by sharing with my network. Amazing opportunity!",
                 name: "Tunde O.",
                 role: "Top Affiliate",
               },
@@ -319,7 +319,7 @@ export default function HomePage() {
                 How do I get paid?
               </AccordionTrigger>
               <AccordionContent value="payment">
-                Affiliates are paid via bank transfer or mobile money once you reach the minimum withdrawal threshold of ₦50,000. Payments are processed within 7 business days of withdrawal request.
+                Affiliates are paid via bank transfer once you reach the minimum withdrawal threshold of $50. Payments are processed within 7 business days of withdrawal request.
               </AccordionContent>
             </AccordionItem>
 

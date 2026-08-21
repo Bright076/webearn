@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/components/ui/toast";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +30,7 @@ const signUpSchema = z
 type SignUpFormData = z.infer<typeof signUpSchema>;
 
 export default function SignUpPage() {
+  const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -50,14 +52,19 @@ export default function SignUpPage() {
 
     if (result?.error) {
       setErrorMessage(result.error);
+      addToast(result.error, "error");
       setIsLoading(false);
     } else if (result?.message) {
       // Email confirmation required
       setSuccessMessage(result.message);
+      addToast(result.message, "success");
       setIsLoading(false);
     } else if (result?.success) {
+      addToast("Account created successfully!", "success");
       // Redirect to dashboard
-      window.location.href = "/dashboard";
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
     }
   };
 
@@ -84,7 +91,7 @@ export default function SignUpPage() {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">High Commission Rates</h3>
-                  <p className="text-muted text-sm">Earn 30% on every project you refer - up to ₦360,000 per sale</p>
+                  <p className="text-muted text-sm">Earn 30% on every project you refer - up to $1,200 per sale</p>
                 </div>
               </div>
 
@@ -104,7 +111,7 @@ export default function SignUpPage() {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">Fast Payouts</h3>
-                  <p className="text-muted text-sm">Withdraw your earnings anytime with a minimum of ₦5,000</p>
+                  <p className="text-muted text-sm">Withdraw your earnings anytime with a minimum of $50</p>
                 </div>
               </div>
 
@@ -264,7 +271,7 @@ export default function SignUpPage() {
                 </p>
                 <p className="flex items-center gap-2">
                   <span className="text-primary">✓</span>
-                  <span className="text-muted">Fast payouts (minimum ₦5,000)</span>
+                  <span className="text-muted">Fast payouts (minimum $50)</span>
                 </p>
                 <p className="flex items-center gap-2">
                   <span className="text-primary">✓</span>

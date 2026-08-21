@@ -68,7 +68,7 @@ export default async function MarketplacePage() {
 
   const formatCommission = (type: string, value: number) => {
     if (type === "fixed") {
-      return `₦${value.toLocaleString()}`;
+      return `$${value.toLocaleString()}`;
     }
     return `${value}%`;
   };
@@ -119,7 +119,7 @@ export default async function MarketplacePage() {
                       <div className="flex justify-between">
                         <span className="text-muted">Price:</span>
                         <span className="font-semibold">
-                          ₦{product.price.toLocaleString()}
+                          ${product.price.toLocaleString()}
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -186,7 +186,7 @@ export default async function MarketplacePage() {
                         <div className="flex justify-between">
                           <span className="text-muted">Price:</span>
                           <span className="font-semibold">
-                            ₦{product.price.toLocaleString()}
+                            ${product.price.toLocaleString()}
                           </span>
                         </div>
                         <div className="flex justify-between">

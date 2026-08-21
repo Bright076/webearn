@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +27,7 @@ export function PromoteButton({ productSlug, variant = "default", className }: P
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const { addToast } = useToast();
 
   const handlePromote = async () => {
     // Check if user is logged in
@@ -54,6 +56,7 @@ export function PromoteButton({ productSlug, variant = "default", className }: P
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(referralLink);
     setCopied(true);
+    addToast("Referral link copied to clipboard!", "success");
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -69,13 +72,13 @@ export function PromoteButton({ productSlug, variant = "default", className }: P
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
-          <DialogClose onClick={() => setDialogOpen(false)} />
           <DialogHeader>
             <DialogTitle>Your Referral Link</DialogTitle>
             <DialogDescription>
               Share this link to earn commission on this product
             </DialogDescription>
           </DialogHeader>
+          <DialogClose onClick={() => setDialogOpen(false)} />
           <div className="px-6 pb-6">
             <div className="flex gap-2">
               <input

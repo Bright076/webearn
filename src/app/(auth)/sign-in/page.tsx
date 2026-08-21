@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/toast";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +21,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function SignInPage() {
   const router = useRouter();
+  const { addToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -39,10 +41,14 @@ export default function SignInPage() {
     
     if (result?.error) {
       setErrorMessage(result.error);
+      addToast(result.error, "error");
       setIsLoading(false);
     } else if (result?.success) {
+      addToast("Signed in successfully!", "success");
       // Redirect to dashboard
-      window.location.href = "/dashboard";
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 1000);
     }
   };
 
