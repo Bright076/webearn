@@ -36,9 +36,8 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     if (asChild && props.children) {
       const child = props.children as React.ReactElement;
       return React.cloneElement(child, {
-        ...child.props,
-        className: cn(child.props.className, classes)
-      });
+        className: cn(child.props?.className, classes)
+      } as any);
     }
 
     return (
