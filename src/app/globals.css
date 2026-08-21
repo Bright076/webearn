@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  /* Fonts */
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-sans: var(--font-body);
+  
+  /* Colors */
+  --color-background: #FAFAF9;
+  --color-foreground: #161B1A;
+  
+  --color-primary: #0F6B4C;
+  --color-primary-foreground: #FFFFFF;
+  
+  --color-accent: #E8A33D;
+  --color-accent-foreground: #161B1A;
+  
+  --color-muted: #4B5563;
+  --color-muted-foreground: #FAFAF9;
+  
+  --color-border: #E5E7EB;
+  --color-sidebar: #0F3D2C;
+  --color-input: #E5E7EB;
+  --color-ring: #0F6B4C;
+  
+  --color-card: #FFFFFF;
+  --color-card-foreground: #161B1A;
+  
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #161B1A;
+  
+  --color-secondary: #F3F4F6;
+  --color-secondary-foreground: #161B1A;
+  
+  --color-destructive: #EF4444;
+  --color-destructive-foreground: #FFFFFF;
+  
+  /* Border Radius */
+  --radius-lg: 0.5rem;
+  --radius-md: calc(0.5rem - 2px);
+  --radius-sm: calc(0.5rem - 4px);
+  --default-radius: var(--radius-lg);
+}
+
+* {
+  border-color: theme(colors.border);
+}
+
+body {
+  background: theme(colors.background);
+  color: theme(colors.foreground);
+  font-family: theme(fontFamily.body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: theme(fontFamily.heading);
+}
