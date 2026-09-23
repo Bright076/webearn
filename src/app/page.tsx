@@ -15,8 +15,32 @@ import {
   Shield,
   Quote,
 } from "lucide-react";
+import { createAdminClient } from "@/lib/supabase/admin";
+import Image from "next/image";
+import type { Metadata } from "next";
 
-export default function HomePage() {
+export const metadata: Metadata = {
+  title: "WebEarn - Get a Professional Website or Earn Money by Referring Clients",
+  description: "We build high-quality websites for Nigerian businesses. Know someone who needs one? Refer them and earn commission up to 30%.",
+};
+
+export default async function HomePage() {
+  // Fetch real products from database
+  const adminClient = createAdminClient();
+  const { data: products } = await adminClient
+    .from("products")
+    .select("id, name, price, commission_type, commission_value, delivery_days, thumbnail_url, category_id")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(6);
+
+  // Calculate commission amount for display
+  const getCommissionAmount = (price: number, type: string, value: number) => {
+    if (type === "percentage") {
+      return (price * value) / 100;
+    }
+    return value;
+  };
   return (
     <div className="min-h-screen bg-background">
       <MarketingNav />
@@ -174,99 +198,73 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Services */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-heading font-bold">
-              Featured Services
-            </h2>
-            <Link href="/marketplace" className="text-primary hover:underline font-medium">
-              View all →
-            </Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Landing Page", price: "$500", commission: "$150", delivery: "7 days" },
-              { name: "Business Website", price: "$1,200", commission: "$360", delivery: "14 days" },
-              { name: "E-Commerce Store", price: "$2,500", commission: "$750", delivery: "21 days" },
-            ].map((service, idx) => (
-              <div key={idx} className="bg-white border border-border rounded-lg p-6">
-                <h3 className="text-xl font-heading font-semibold mb-4">
-                  {service.name}
-                </h3>
-                <div className="space-y-2 mb-6 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted">Price:</span>
-                    <span className="font-semibold">{service.price}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted">Commission:</span>
-                    <span className="font-semibold text-accent">{service.commission}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted">Delivery:</span>
-                    <span className="font-semibold">{service.delivery}</span>
-                  </div>
-                </div>
-                <Button variant="outline" className="w-full">
-                  Promote
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Templates */}
-      <section className="py-16 px-4 bg-secondary/30">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-heading font-bold">
-              Featured Templates
-            </h2>
-            <Link href="/marketplace" className="text-primary hover:underline font-medium">
-              View all →
-            </Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { name: "Restaurant Template", price: "$300", commission: "$90" },
-              { name: "Portfolio Template", price: "$250", commission: "$75" },
-              { name: "Church Template", price: "$400", commission: "$120" },
-            ].map((template, idx) => (
-              <div key={idx} className="bg-white border border-border rounded-lg overflow-hidden">
-                <div className="bg-muted/20 aspect-video flex items-center justify-center text-muted">
-                  Preview Image
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-heading font-semibold mb-2">
-                    {template.name}
-                  </h3>
-                  <div className="space-y-1 mb-4 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted">Price:</span>
-                      <span className="font-semibold">{template.price}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted">Commission:</span>
-                      <span className="font-semibold text-accent">{template.commission}</span>
+      {/* Featured Products */}
+      {products && products.length > 0 && (
+        <section className="py-16 px-4">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-heading font-bold">
+                Featured Products
+              </h2>
+              <Link href="/marketplace" className="text-primary hover:underline font-medium">
+                View all →
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {products.slice(0, 6).map((product) => {
+                const commissionAmount = getCommissionAmount(
+                  Number(product.price),
+                  product.commission_type,
+                  Number(product.commission_value)
+                );
+                
+                return (
+                  <div key={product.id} className="bg-white border border-border rounded-lg overflow-hidden">
+                    {product.thumbnail_url && (
+                      <div className="bg-muted/20 aspect-video relative overflow-hidden">
+                        <Image
+                          src={product.thumbnail_url}
+                          alt={product.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <h3 className="text-xl font-heading font-semibold mb-4">
+                        {product.name}
+                      </h3>
+                      <div className="space-y-2 mb-6 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted">Price:</span>
+                          <span className="font-semibold">${Number(product.price).toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted">Commission:</span>
+                          <span className="font-semibold text-accent">
+                            ${commissionAmount.toLocaleString()}
+                          </span>
+                        </div>
+                        {product.delivery_days && (
+                          <div className="flex justify-between">
+                            <span className="text-muted">Delivery:</span>
+                            <span className="font-semibold">{product.delivery_days} days</span>
+                          </div>
+                        )}
+                      </div>
+                      <Link href="/sign-up">
+                        <Button variant="outline" className="w-full">
+                          Promote
+                        </Button>
+                      </Link>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
-                      View Demo
-                    </Button>
-                    <Button className="flex-1">
-                      Promote
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Testimonials */}
       <section className="py-16 px-4">

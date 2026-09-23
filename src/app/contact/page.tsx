@@ -1,4 +1,10 @@
 import { MarketingNav } from "@/components/marketing/nav";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us | WebEarn",
+  description: "Get in touch with WebEarn. We're here to help with your website needs or answer questions about our affiliate program.",
+};
 
 export default function ContactPage() {
   return (

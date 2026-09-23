@@ -13,6 +13,7 @@ import {
   DollarSign,
   Wallet,
   Settings,
+  BarChart3,
 } from "lucide-react";
 
 export default async function AdminLayout({
@@ -50,6 +51,7 @@ export default async function AdminLayout({
 
   const navItems = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
     { href: "/admin/products", label: "Products", icon: Package },
     { href: "/admin/requests", label: "Client Requests", icon: FileText },
     { href: "/admin/affiliates", label: "Affiliates", icon: Users },

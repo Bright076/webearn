@@ -4,6 +4,12 @@ import { PromoteButton } from "@/components/marketplace/PromoteButton";
 import { Button } from "@/components/ui/button";
 import { PackageOpen } from "lucide-react";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Marketplace - Website Services & Templates | WebEarn",
+  description: "Browse and promote professional website services and templates. Earn up to 30% commission on every successful referral.",
+};
 
 interface Product {
   id: string;
