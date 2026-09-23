@@ -220,7 +220,7 @@ export default async function HomePage() {
                 
                 return (
                   <div key={product.id} className="bg-white border border-border rounded-lg overflow-hidden">
-                    {product.thumbnail_url && (
+                    {product.thumbnail_url ? (
                       <div className="bg-muted/20 aspect-video relative overflow-hidden">
                         <Image
                           src={product.thumbnail_url}
@@ -228,6 +228,10 @@ export default async function HomePage() {
                           fill
                           className="object-contain"
                         />
+                      </div>
+                    ) : (
+                      <div className="w-full aspect-video bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                        <span className="text-muted text-sm">No preview</span>
                       </div>
                     )}
                     <div className="p-6">
