@@ -44,10 +44,14 @@ export default function SignInPage() {
       addToast(result.error, "error");
       setIsLoading(false);
     } else if (result?.success) {
-      addToast("Signed in successfully!", "success");
-      // Redirect to dashboard
+      const message = result.isAdmin 
+        ? "Signed in successfully! Redirecting to admin dashboard..." 
+        : "Signed in successfully!";
+      addToast(message, "success");
+      
+      // Redirect to appropriate dashboard
       setTimeout(() => {
-        window.location.href = "/dashboard";
+        window.location.href = result.redirectTo || "/dashboard";
       }, 1000);
     }
   };

@@ -28,8 +28,19 @@ export default async function DashboardLayout({
     redirect("/sign-in");
   }
 
-  // Fetch user profile
+  // Check if user is admin - redirect to admin dashboard if they are
   const adminClient = createAdminClient();
+  const { data: userRole } = await adminClient
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id)
+    .single();
+
+  if (userRole?.role === "admin") {
+    redirect("/admin");
+  }
+
+  // Fetch user profile
   const { data: profile } = await adminClient
     .from("profiles")
     .select("full_name, email")
