@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { sendNotifications } from "@/lib/actions/notifications";
 
 interface Affiliate {
   id: string;
@@ -16,7 +16,6 @@ interface Affiliate {
 
 export function SendNotificationForm({ affiliates }: { affiliates: Affiliate[] }) {
   const router = useRouter();
-  const supabase = createClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -49,26 +48,24 @@ export function SendNotificationForm({ affiliates }: { affiliates: Affiliate[] }
         return;
       }
 
-      // Create notifications for each recipient
-      const notifications = recipientIds.map((userId) => ({
-        user_id: userId,
+      // Send notifications using server action
+      const result = await sendNotifications({
+        recipientIds,
         title: formData.title,
         message: formData.message,
         type: formData.type,
-        link: formData.link || null,
-      }));
+        link: formData.link || undefined,
+      });
 
-      const { error } = await supabase.from("notifications").insert(notifications);
-
-      if (error) {
-        setErrorMessage("Failed to send notifications: " + error.message);
+      if (result.error) {
+        setErrorMessage(result.error);
         setIsSubmitting(false);
         return;
       }
 
       setSuccessMessage(
-        `Successfully sent notification to ${recipientIds.length} affiliate${
-          recipientIds.length > 1 ? "s" : ""
+        `Successfully sent notification to ${result.count} affiliate${
+          result.count! > 1 ? "s" : ""
         }!`
       );
 

@@ -27,14 +27,12 @@ CREATE POLICY "Users can update their own notifications"
   ON notifications FOR UPDATE
   USING (auth.uid() = user_id);
 
-CREATE POLICY "Admins can insert notifications for anyone"
-  ON notifications FOR INSERT
-  WITH CHECK (
-    EXISTS (
-      SELECT 1 FROM user_roles 
-      WHERE user_id = auth.uid() AND role = 'admin'
-    )
-  );
+CREATE POLICY "Users can delete their own notifications"
+  ON notifications FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- NOTE: We don't add an INSERT policy here because admins will use the service role
+-- to bypass RLS when sending notifications. This avoids the infinite recursion issue.
 
 -- Function to create notification when client request is created
 CREATE OR REPLACE FUNCTION notify_affiliate_on_lead()

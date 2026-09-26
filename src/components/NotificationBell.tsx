@@ -26,74 +26,104 @@ export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [hasError, setHasError] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
     fetchNotifications();
 
-    // Subscribe to new notifications
-    const channel = supabase
-      .channel("notifications")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-        },
-        () => {
-          fetchNotifications();
-        }
-      )
-      .subscribe();
+    // Subscribe to new notifications - with error handling
+    try {
+      const channel = supabase
+        .channel("notifications")
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "notifications",
+          },
+          () => {
+            fetchNotifications();
+          }
+        )
+        .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    } catch (error) {
+      console.error("Error subscribing to notifications:", error);
+      setHasError(true);
+    }
   }, []);
 
   const fetchNotifications = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
 
-    const { data } = await supabase
-      .from("notifications")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(20);
+      const { data, error } = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(20);
 
-    if (data) {
-      setNotifications(data);
-      setUnreadCount(data.filter((n) => !n.read).length);
+      if (error) {
+        console.error("Error fetching notifications:", error);
+        setHasError(true);
+        return;
+      }
+
+      if (data) {
+        setNotifications(data);
+        setUnreadCount(data.filter((n) => !n.read).length);
+        setHasError(false);
+      }
+    } catch (error) {
+      console.error("Error in fetchNotifications:", error);
+      setHasError(true);
     }
   };
 
   const markAsRead = async (id: string) => {
-    await supabase.from("notifications").update({ read: true }).eq("id", id);
-    fetchNotifications();
+    try {
+      await supabase.from("notifications").update({ read: true }).eq("id", id);
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error marking as read:", error);
+    }
   };
 
   const markAllAsRead = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) return;
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return;
 
-    await supabase
-      .from("notifications")
-      .update({ read: true })
-      .eq("user_id", user.id)
-      .eq("read", false);
+      await supabase
+        .from("notifications")
+        .update({ read: true })
+        .eq("user_id", user.id)
+        .eq("read", false);
 
-    fetchNotifications();
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error marking all as read:", error);
+    }
   };
 
   const deleteNotification = async (id: string) => {
-    await supabase.from("notifications").delete().eq("id", id);
-    fetchNotifications();
+    try {
+      await supabase.from("notifications").delete().eq("id", id);
+      fetchNotifications();
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
   };
 
   const getNotificationColor = (type: string) => {
@@ -110,19 +140,28 @@ export function NotificationBell() {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    return date.toLocaleDateString();
+      if (diffMins < 1) return "Just now";
+      if (diffMins < 60) return `${diffMins}m ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      return date.toLocaleDateString();
+    } catch (error) {
+      return "Recently";
+    }
   };
+
+  // Don't render if there's an error (table might not exist yet)
+  if (hasError) {
+    return null;
+  }
 
   return (
     <>
