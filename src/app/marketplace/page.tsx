@@ -97,9 +97,13 @@ export default async function MarketplacePage() {
         {/* Tabs */}
         <Tabs defaultValue="all">
           <TabsList className="mb-8">
-            <TabsTrigger value="all">All Products</TabsTrigger>
-            <TabsTrigger value="services">Website Services ({services.length})</TabsTrigger>
-            <TabsTrigger value="templates">Website Templates ({templates.length})</TabsTrigger>
+            <TabsTrigger value="all">All Products ({products?.length || 0})</TabsTrigger>
+            {services.length > 0 && (
+              <TabsTrigger value="services">Website Services ({services.length})</TabsTrigger>
+            )}
+            {templates.length > 0 && (
+              <TabsTrigger value="templates">Website Templates ({templates.length})</TabsTrigger>
+            )}
           </TabsList>
 
           {/* All Products Tab */}
