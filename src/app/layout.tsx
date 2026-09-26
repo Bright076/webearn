@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import { ToastProvider } from "@/components/ui/toast";
+import { PageViewTracker } from "@/components/PageViewTracker";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-background font-body text-foreground antialiased">
         <ToastProvider>
+          <PageViewTracker />
           {children}
         </ToastProvider>
       </body>

@@ -58,6 +58,59 @@ export default async function AdminDashboardPage() {
     return sum + (product?.price ? Number(product.price) : 0);
   }, 0) || 0;
 
+  // Visitor Statistics
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const thisWeekStart = new Date(now);
+  thisWeekStart.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
+  thisWeekStart.setHours(0, 0, 0, 0);
+  const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  // Today's visitors (unique IPs)
+  const { data: todayViews } = await adminClient
+    .from("page_views")
+    .select("ip_hash")
+    .gte("created_at", today.toISOString());
+
+  const uniqueToday = new Set(todayViews?.map((v) => v.ip_hash) || []).size;
+
+  // This week's visitors
+  const { data: weekViews } = await adminClient
+    .from("page_views")
+    .select("ip_hash")
+    .gte("created_at", thisWeekStart.toISOString());
+
+  const uniqueThisWeek = new Set(weekViews?.map((v) => v.ip_hash) || []).size;
+
+  // This month's visitors
+  const { data: monthViews } = await adminClient
+    .from("page_views")
+    .select("ip_hash")
+    .gte("created_at", thisMonthStart.toISOString());
+
+  const uniqueThisMonth = new Set(monthViews?.map((v) => v.ip_hash) || []).size;
+
+  // Total page views
+  const { count: totalPageViews } = await adminClient
+    .from("page_views")
+    .select("*", { count: "exact", head: true });
+
+  // Top pages
+  const { data: allViews } = await adminClient
+    .from("page_views")
+    .select("page_url")
+    .gte("created_at", thisMonthStart.toISOString());
+
+  const pageCount = new Map<string, number>();
+  allViews?.forEach((view) => {
+    pageCount.set(view.page_url, (pageCount.get(view.page_url) || 0) + 1);
+  });
+
+  const topPages = Array.from(pageCount.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([url, count]) => ({ url, count }));
+
   const stats = [
     {
       title: "Total Client Requests",
@@ -189,6 +242,50 @@ export default async function AdminDashboardPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Visitor Statistics */}
+      <div className="bg-white border border-border rounded-lg p-6">
+        <h2 className="text-xl font-heading font-bold text-foreground mb-6">
+          📊 Visitor Statistics
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800 mb-1">Today</p>
+            <p className="text-2xl font-bold text-blue-900">{uniqueToday}</p>
+            <p className="text-xs text-blue-600">unique visitors</p>
+          </div>
+          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+            <p className="text-sm text-purple-800 mb-1">This Week</p>
+            <p className="text-2xl font-bold text-purple-900">{uniqueThisWeek}</p>
+            <p className="text-xs text-purple-600">unique visitors</p>
+          </div>
+          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+            <p className="text-sm text-emerald-800 mb-1">This Month</p>
+            <p className="text-2xl font-bold text-emerald-900">{uniqueThisMonth}</p>
+            <p className="text-xs text-emerald-600">unique visitors</p>
+          </div>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <p className="text-sm text-amber-800 mb-1">Total Views</p>
+            <p className="text-2xl font-bold text-amber-900">{totalPageViews || 0}</p>
+            <p className="text-xs text-amber-600">all time</p>
+          </div>
+        </div>
+
+        {topPages.length > 0 && (
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-3">Top Pages This Month</h3>
+            <div className="space-y-2">
+              {topPages.map((page, index) => (
+                <div key={index} className="flex items-center justify-between py-2 px-3 bg-secondary/30 rounded">
+                  <span className="text-sm text-foreground truncate flex-1">{page.url}</span>
+                  <span className="text-sm font-semibold text-primary ml-4">{page.count} views</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
