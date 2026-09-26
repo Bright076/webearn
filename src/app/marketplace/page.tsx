@@ -175,8 +175,11 @@ export default async function MarketplacePage() {
             {services.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <PackageOpen className="w-16 h-16 text-muted mb-4" />
-                <p className="text-xl text-muted">
-                  No services available yet — check back soon
+                <p className="text-xl font-semibold text-foreground mb-2">
+                  No services in this category yet
+                </p>
+                <p className="text-muted text-center max-w-md">
+                  Products in the "Website Services" category will appear here. Check the "All Products" tab to see all available products.
                 </p>
               </div>
             ) : (
@@ -243,8 +246,11 @@ export default async function MarketplacePage() {
             {templates.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <PackageOpen className="w-16 h-16 text-muted mb-4" />
-                <p className="text-xl text-muted">
-                  No templates available yet — check back soon
+                <p className="text-xl font-semibold text-foreground mb-2">
+                  No templates in this category yet
+                </p>
+                <p className="text-muted text-center max-w-md">
+                  Products in the "Website Templates" category will appear here. Check the "All Products" tab to see all available products.
                 </p>
               </div>
             ) : (

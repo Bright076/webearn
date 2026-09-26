@@ -14,6 +14,7 @@ import {
   Wallet,
   Settings,
   BarChart3,
+  Bell,
 } from "lucide-react";
 
 export default async function AdminLayout({
@@ -57,6 +58,7 @@ export default async function AdminLayout({
     { href: "/admin/affiliates", label: "Affiliates", icon: Users },
     { href: "/admin/commissions", label: "Commissions", icon: DollarSign },
     { href: "/admin/withdrawals", label: "Withdrawals", icon: Wallet },
+    { href: "/admin/notifications", label: "Send Notifications", icon: Bell },
     { href: "/admin/settings", label: "Settings", icon: Settings },
   ];
 

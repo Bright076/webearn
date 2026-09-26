@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { SignOutButton } from "@/components/SignOutButton";
 import { MobileMenuButton } from "@/components/MobileMenuButton";
+import { NotificationBell } from "@/components/NotificationBell";
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -61,7 +62,10 @@ export default async function DashboardLayout({
       {/* Mobile Header */}
       <header className="md:hidden bg-sidebar px-4 py-3 flex items-center justify-between border-b border-white/10">
         <Logo variant="light" size="sm" />
-        <MobileMenuButton sidebarId="mobile-sidebar" />
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <MobileMenuButton sidebarId="mobile-sidebar" />
+        </div>
       </header>
 
       {/* Sidebar */}
@@ -102,6 +106,7 @@ export default async function DashboardLayout({
                 {profile?.full_name || profile?.email || "Affiliate"}
               </p>
             </div>
+            <NotificationBell />
           </div>
         </header>
 
