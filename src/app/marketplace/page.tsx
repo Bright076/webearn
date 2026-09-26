@@ -95,11 +95,80 @@ export default async function MarketplacePage() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="services">
+        <Tabs defaultValue="all">
           <TabsList className="mb-8">
-            <TabsTrigger value="services">Website Services</TabsTrigger>
-            <TabsTrigger value="templates">Website Templates</TabsTrigger>
+            <TabsTrigger value="all">All Products</TabsTrigger>
+            <TabsTrigger value="services">Website Services ({services.length})</TabsTrigger>
+            <TabsTrigger value="templates">Website Templates ({templates.length})</TabsTrigger>
           </TabsList>
+
+          {/* All Products Tab */}
+          <TabsContent value="all">
+            {!products || products.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <PackageOpen className="w-16 h-16 text-muted mb-4" />
+                <p className="text-xl text-muted">
+                  No products available yet — check back soon
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="bg-white border border-border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    {/* Thumbnail */}
+                    {product.thumbnail_url ? (
+                      <img
+                        src={product.thumbnail_url}
+                        alt={product.name}
+                        className="w-full h-48 object-contain bg-secondary/20"
+                      />
+                    ) : (
+                      <div className="w-full h-48 bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                        <span className="text-muted">No preview</span>
+                      </div>
+                    )}
+
+                    <div className="p-6">
+                      <h3 className="text-xl font-heading font-semibold mb-4">
+                        {product.name}
+                      </h3>
+                      
+                      <div className="space-y-2 mb-6 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-muted">Price:</span>
+                          <span className="font-semibold">
+                            ${product.price.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-muted">Commission:</span>
+                          <span className="font-semibold text-accent">
+                            {formatCommission(product.commission_type, product.commission_value)}
+                          </span>
+                        </div>
+                        {product.delivery_days && (
+                          <div className="flex justify-between">
+                            <span className="text-muted">Delivery:</span>
+                            <span className="font-semibold">
+                              {product.delivery_days} {product.delivery_days === 1 ? 'day' : 'days'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <PromoteButton
+                        productSlug={product.slug}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </TabsContent>
 
           {/* Services Tab */}
           <TabsContent value="services">

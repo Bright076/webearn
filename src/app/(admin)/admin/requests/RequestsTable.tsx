@@ -12,12 +12,16 @@ interface Request {
   id: string;
   created_at: string;
   full_name: string;
-  email: string;
-  whatsapp: string;
-  message: string | null;
+  email: string | null;
+  whatsapp_number: string;
+  business_name: string | null;
+  website_type: string;
+  budget: string;
+  project_description: string | null;
   status: string;
   admin_notes: string | null;
   affiliate_id: string | null;
+  product_id: string | null;
   products: {
     id: string;
     name: string;
@@ -258,7 +262,7 @@ export function RequestsTable({ requests }: { requests: Request[] }) {
                           <p className="text-sm text-muted">{request.email}</p>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-foreground">{request.whatsapp}</td>
+                      <td className="px-6 py-4 text-sm text-foreground">{request.whatsapp_number}</td>
                       <td className="px-6 py-4 text-sm text-foreground">
                         {request.products?.name || "N/A"}
                       </td>
@@ -321,17 +325,35 @@ export function RequestsTable({ requests }: { requests: Request[] }) {
                   </div>
                   <div>
                     <p className="text-muted">WhatsApp</p>
-                    <p className="font-semibold text-foreground">{selectedRequest.whatsapp}</p>
+                    <p className="font-semibold text-foreground">{selectedRequest.whatsapp_number}</p>
                   </div>
-                  <div className="col-span-2">
+                  <div>
                     <p className="text-muted">Email</p>
-                    <p className="font-semibold text-foreground">{selectedRequest.email}</p>
+                    <p className="font-semibold text-foreground">{selectedRequest.email || "N/A"}</p>
                   </div>
                 </div>
               </div>
 
               {/* Product & Affiliate Info */}
               <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-muted mb-1">Business Name</p>
+                  <p className="font-semibold text-foreground">
+                    {selectedRequest.business_name || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted mb-1">Website Type</p>
+                  <p className="font-semibold text-foreground capitalize">
+                    {selectedRequest.website_type?.replace("-", " ") || "N/A"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted mb-1">Budget</p>
+                  <p className="font-semibold text-foreground capitalize">
+                    {selectedRequest.budget?.replace("-", " - ") || "N/A"}
+                  </p>
+                </div>
                 <div>
                   <p className="text-sm text-muted mb-1">Product</p>
                   <p className="font-semibold text-foreground">
@@ -356,12 +378,12 @@ export function RequestsTable({ requests }: { requests: Request[] }) {
               </div>
 
               {/* Client Message */}
-              {selectedRequest.message && (
+              {selectedRequest.project_description && (
                 <div>
-                  <p className="text-sm text-muted mb-2">Client Message</p>
+                  <p className="text-sm text-muted mb-2">Project Description</p>
                   <div className="bg-secondary/30 rounded-lg p-4">
                     <p className="text-sm text-foreground whitespace-pre-wrap">
-                      {selectedRequest.message}
+                      {selectedRequest.project_description}
                     </p>
                   </div>
                 </div>

@@ -16,9 +16,9 @@ const withdrawalSchema = z.object({
   amount: z.string().refine(
     (val) => {
       const num = parseFloat(val);
-      return !isNaN(num) && num >= 50;
+      return !isNaN(num) && num >= 5;
     },
-    { message: "Minimum withdrawal amount is $50" }
+    { message: "Minimum withdrawal amount is $5" }
   ),
 });
 
@@ -173,7 +173,7 @@ export default function WithdrawalsPage() {
         </div>
         <Button
           onClick={() => setIsOpen(true)}
-          disabled={availableBalance < 5000}
+          disabled={availableBalance < 5}
           size="lg"
         >
           <Wallet className="w-4 h-4 mr-2" />
@@ -189,9 +189,9 @@ export default function WithdrawalsPage() {
             <p className="text-4xl font-heading font-bold">
               ${availableBalance.toLocaleString()}
             </p>
-            {availableBalance < 50 && (
+            {availableBalance < 5 && (
               <p className="text-sm text-primary-foreground/80 mt-2">
-                Minimum withdrawal: $50
+                Minimum withdrawal: $5
               </p>
             )}
           </div>
@@ -216,7 +216,7 @@ export default function WithdrawalsPage() {
               No Withdrawals Yet
             </p>
             <p className="text-muted text-center max-w-md mb-6">
-              Once you have $50 or more in approved commissions, you can request a withdrawal
+              Once you have $5 or more in approved commissions, you can request a withdrawal
             </p>
           </div>
         </div>

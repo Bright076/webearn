@@ -28,6 +28,36 @@ export default async function AdminDashboardPage() {
     .select("*", { count: "exact", head: true })
     .eq("status", "pending");
 
+  // Platform Status Stats
+  const { count: activeProducts } = await adminClient
+    .from("products")
+    .select("*", { count: "exact", head: true })
+    .eq("is_active", true);
+
+  // Count only affiliates (not admins) - users with profiles but not in user_roles as admin
+  const { data: allProfiles } = await adminClient
+    .from("profiles")
+    .select("id");
+
+  const { data: adminUsers } = await adminClient
+    .from("user_roles")
+    .select("user_id")
+    .eq("role", "admin");
+
+  const adminIds = new Set(adminUsers?.map((u) => u.user_id) || []);
+  const activeAffiliates = allProfiles?.filter((p) => !adminIds.has(p.id)).length || 0;
+
+  // Total Revenue (paid requests)
+  const { data: paidRequests } = await adminClient
+    .from("client_requests")
+    .select("products(price)")
+    .eq("status", "paid");
+
+  const totalRevenue = paidRequests?.reduce((sum, req: any) => {
+    const product = Array.isArray(req.products) ? req.products[0] : req.products;
+    return sum + (product?.price ? Number(product.price) : 0);
+  }, 0) || 0;
+
   const stats = [
     {
       title: "Total Client Requests",
@@ -147,15 +177,15 @@ export default async function AdminDashboardPage() {
           <div className="space-y-4">
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted">Active Products</span>
-              <span className="font-semibold text-foreground">Loading...</span>
+              <span className="font-semibold text-foreground">{activeProducts || 0}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted">Active Affiliates</span>
-              <span className="font-semibold text-foreground">Loading...</span>
+              <span className="font-semibold text-foreground">{activeAffiliates}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-sm text-muted">Total Revenue</span>
-              <span className="font-semibold text-foreground">$0</span>
+              <span className="font-semibold text-foreground">${totalRevenue.toLocaleString()}</span>
             </div>
           </div>
         </div>
