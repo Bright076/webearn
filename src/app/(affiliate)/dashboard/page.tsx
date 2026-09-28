@@ -132,14 +132,14 @@ export default async function DashboardPage() {
           <p className="text-3xl font-heading font-bold text-foreground">
             ${availableBalance.toLocaleString()}
           </p>
-          {availableBalance >= 50 ? (
+          {availableBalance >= 5 ? (
             <Link href="/dashboard/withdrawals">
               <p className="text-sm text-primary hover:underline mt-2">
                 Request withdrawal →
               </p>
             </Link>
           ) : (
-            <p className="text-sm text-muted mt-2">Min. $50 to withdraw</p>
+            <p className="text-sm text-muted mt-2">Min. $5 to withdraw</p>
           )}
         </div>
       </div>

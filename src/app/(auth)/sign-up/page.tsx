@@ -111,7 +111,7 @@ export default function SignUpPage() {
                 </div>
                 <div>
                   <h3 className="font-heading font-semibold text-foreground mb-1">Fast Payouts</h3>
-                  <p className="text-muted text-sm">Withdraw your earnings anytime with a minimum of $50</p>
+                  <p className="text-muted text-sm">Withdraw your earnings anytime with a minimum of $5</p>
                 </div>
               </div>
 
@@ -271,7 +271,7 @@ export default function SignUpPage() {
                 </p>
                 <p className="flex items-center gap-2">
                   <span className="text-primary">✓</span>
-                  <span className="text-muted">Fast payouts (minimum $50)</span>
+                  <span className="text-muted">Fast payouts (minimum $5)</span>
                 </p>
                 <p className="flex items-center gap-2">
                   <span className="text-primary">✓</span>

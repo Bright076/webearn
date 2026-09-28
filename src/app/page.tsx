@@ -321,7 +321,7 @@ export default async function HomePage() {
                 How do I get paid?
               </AccordionTrigger>
               <AccordionContent value="payment">
-                Affiliates are paid via bank transfer once you reach the minimum withdrawal threshold of $50. Payments are processed within 7 business days of withdrawal request.
+                Affiliates are paid via bank transfer once you reach the minimum withdrawal threshold of $5. Payments are processed within 7 business days of withdrawal request.
               </AccordionContent>
             </AccordionItem>
 
