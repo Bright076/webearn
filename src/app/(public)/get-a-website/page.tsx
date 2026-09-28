@@ -41,7 +41,17 @@ export default function GetAWebsitePage() {
     setIsLoading(true);
     setErrorMessage("");
 
+    console.log("=== FORM SUBMISSION DEBUG ===");
+    console.log("Form data:", data);
+
+    // Check if referral cookie exists
+    const cookies = document.cookie;
+    console.log("All cookies:", cookies);
+    const referralCookie = cookies.split(';').find(c => c.trim().startsWith('webearn_ref='));
+    console.log("Referral cookie:", referralCookie || "NOT FOUND");
+
     try {
+      console.log("Sending request to /api/requests...");
       const response = await fetch("/api/requests", {
         method: "POST",
         headers: {
@@ -50,19 +60,24 @@ export default function GetAWebsitePage() {
         body: JSON.stringify(data),
       });
 
+      console.log("Response status:", response.status);
       const result = await response.json();
+      console.log("Response data:", result);
 
       if (!response.ok) {
         const errorMsg = result.details || result.error || "Failed to submit request";
+        console.error("Error submitting:", errorMsg);
         setErrorMessage(errorMsg);
         addToast(errorMsg, "error");
         setIsLoading(false);
         return;
       }
 
+      console.log("SUCCESS! Request ID:", result.requestId);
       setIsSuccess(true);
       addToast("Request submitted successfully!", "success");
     } catch (error) {
+      console.error("Fetch error:", error);
       const errorMsg = "An error occurred. Please try again.";
       setErrorMessage(errorMsg);
       addToast(errorMsg, "error");
