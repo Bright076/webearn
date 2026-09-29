@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+// Force Node.js runtime for proper cookie handling
+export const runtime = 'nodejs';
+
 // Simple test to see if cookies work at all
 export async function GET() {
   const response = NextResponse.json({ message: "Cookie set!" });

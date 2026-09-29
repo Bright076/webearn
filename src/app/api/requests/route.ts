@@ -3,6 +3,9 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { decodeReferralData, COOKIE_NAME } from "@/lib/referral";
 import { z } from "zod";
 
+// Force Node.js runtime for proper cookie handling
+export const runtime = 'nodejs';
+
 const requestSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
   whatsappNumber: z.string().min(10, "Valid WhatsApp number is required"),

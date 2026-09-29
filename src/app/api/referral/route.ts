@@ -9,6 +9,9 @@ import {
 } from "@/lib/referral";
 import { cookies } from "next/headers";
 
+// Force Node.js runtime for proper cookie handling
+export const runtime = 'nodejs';
+
 export async function GET(request: NextRequest) {
   console.log("\n========================================");
   console.log("=== API /api/referral CALLED ===");
