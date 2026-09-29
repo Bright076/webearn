@@ -105,9 +105,20 @@ export function hashIP(ip: string): string {
  * Generate cookie options for referral cookie
  */
 export function getReferralCookieOptions() {
+  const isProduction = process.env.NODE_ENV === "production";
+  
+  console.log("Cookie options:", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: "lax",
+    maxAge: COOKIE_MAX_AGE,
+    path: "/",
+    nodeEnv: process.env.NODE_ENV,
+  });
+  
   return {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
     sameSite: "lax" as const,
     maxAge: COOKIE_MAX_AGE,
     path: "/",
