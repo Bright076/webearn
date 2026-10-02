@@ -112,7 +112,6 @@ export default function ProfilePage() {
         bank_name: data.bankName || null,
         bank_account_number: data.bankAccountNumber || null,
         bank_account_name: data.bankAccountName || null,
-        updated_at: new Date().toISOString(),
       })
       .eq("id", user.id);
 
