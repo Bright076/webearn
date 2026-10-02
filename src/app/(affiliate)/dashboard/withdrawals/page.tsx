@@ -148,7 +148,7 @@ export default function WithdrawalsPage() {
     setAvailableBalance(totalApproved - totalWithdrawn);
   }
 
-  const onSubmit = async (data: WithdrawalFormData) {
+  const onSubmit = async (data: WithdrawalFormData) => {
     const amount = parseFloat(data.amount);
 
     // Validate against available balance
