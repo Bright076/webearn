@@ -232,8 +232,35 @@ export function WithdrawalsTable({ withdrawals }: { withdrawals: Withdrawal[] })
                     <tr>
                       <td colSpan={6} className="px-6 py-4 bg-secondary/10">
                         <div className="space-y-3">
-                          <h4 className="font-semibold text-foreground">Bank Details</h4>
-                          {withdrawal.bank_snapshot ? (
+                          <h4 className="font-semibold text-foreground">
+                            Payment Details - {withdrawal.payout_method === 'usdt' ? 'USDT' : 'Bank Transfer'}
+                          </h4>
+                          
+                          {/* USDT Payment Details */}
+                          {withdrawal.payout_method === 'usdt' && withdrawal.wallet_address ? (
+                            <div className="space-y-3">
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <p className="text-muted mb-1">Network</p>
+                                  <Badge className="bg-emerald-100 text-emerald-800">
+                                    {withdrawal.network || 'TRC20'}
+                                  </Badge>
+                                </div>
+                                <div>
+                                  <p className="text-muted mb-1">Wallet Address</p>
+                                  <p className="font-mono text-xs font-semibold break-all">
+                                    {withdrawal.wallet_address}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                                <p className="text-xs text-emerald-800">
+                                  💡 <strong>Important:</strong> Make sure to send USDT on the {withdrawal.network || 'TRC20'} network only!
+                                </p>
+                              </div>
+                            </div>
+                          ) : withdrawal.bank_snapshot ? (
+                            /* Bank Payment Details */
                             <div className="grid grid-cols-3 gap-4 text-sm">
                               <div>
                                 <p className="text-muted">Bank Name</p>
@@ -255,8 +282,9 @@ export function WithdrawalsTable({ withdrawals }: { withdrawals: Withdrawal[] })
                               </div>
                             </div>
                           ) : (
-                            <p className="text-sm text-muted">No bank details available</p>
+                            <p className="text-sm text-muted">No payment details available</p>
                           )}
+                          
                           {withdrawal.rejection_reason && (
                             <div className="mt-4">
                               <h4 className="font-semibold text-red-800 mb-1">
