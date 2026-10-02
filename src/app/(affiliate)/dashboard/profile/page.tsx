@@ -119,7 +119,8 @@ export default function ProfilePage() {
     setIsLoading(false);
 
     if (error) {
-      setErrorMessage("Failed to update profile");
+      console.error("Profile update error:", error);
+      setErrorMessage(`Failed to update profile: ${error.message}`);
       return;
     }
 
