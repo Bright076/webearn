@@ -14,6 +14,9 @@ const requestSchema = z.object({
   websiteType: z.string().min(1, "Website type is required"),
   budget: z.string().min(1, "Budget is required"),
   projectDescription: z.string().optional(),
+  // Referral data passed from form (prefixed with _ to indicate internal)
+  _affiliateId: z.string().uuid().optional().nullable(),
+  _productId: z.string().uuid().optional().nullable(),
 });
 
 export async function POST(request: NextRequest) {
@@ -40,36 +43,18 @@ export async function POST(request: NextRequest) {
     const formData = validationResult.data;
     console.log("✓ Form data validated successfully");
 
-    // Read referral cookie SERVER-SIDE ONLY
-    // NEVER trust client-submitted affiliate_id/product_id
-    console.log("\n--- COOKIE DETECTION ---");
-    console.log("Looking for cookie:", COOKIE_NAME);
+    // Get referral data from request body (passed from form via URL params)
+    console.log("\n--- REFERRAL DATA FROM FORM ---");
+    let affiliateId: string | null = formData._affiliateId || null;
+    let productId: string | null = formData._productId || null;
     
-    const cookieHeader = request.cookies.get(COOKIE_NAME);
-    console.log("Cookie object:", cookieHeader);
+    console.log("Affiliate ID from form:", affiliateId);
+    console.log("Product ID from form:", productId);
     
-    let affiliateId: string | null = null;
-    let productId: string | null = null;
-
-    if (cookieHeader) {
-      console.log("✓ Cookie found!");
-      console.log("Cookie value (encoded):", cookieHeader.value);
-      
-      const referralData = decodeReferralData(cookieHeader.value);
-      console.log("Decoded referral data:", JSON.stringify(referralData, null, 2));
-      
-      if (referralData) {
-        affiliateId = referralData.affiliate_id;
-        productId = referralData.product_id;
-        console.log("✓ Successfully extracted referral data:");
-        console.log("  - Affiliate ID:", affiliateId);
-        console.log("  - Product ID:", productId);
-        console.log("  - Captured at:", referralData.captured_at);
-      } else {
-        console.log("❌ Failed to decode referral data (invalid/expired/tampered)");
-      }
+    if (affiliateId && productId) {
+      console.log("✓ Referral data found in form submission!");
     } else {
-      console.log("ℹ️  No referral cookie found - this is a DIRECT request (not from affiliate link)");
+      console.log("ℹ️  No referral data - this is a DIRECT request");
     }
 
     // Insert request into database
@@ -117,21 +102,11 @@ export async function POST(request: NextRequest) {
     console.log("Product ID in DB:", data.product_id || "NULL");
     console.log("========================================\n");
 
-    // Optional: Clear referral cookie after successful submission
-    // This prevents the same click from being attributed to multiple requests
+    // Return success response
     const response = NextResponse.json({
       success: true,
       message: "Request submitted successfully",
       requestId: data.id,
-    });
-
-    // Clear the cookie
-    response.cookies.set(COOKIE_NAME, "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 0,
-      path: "/",
     });
 
     return response;

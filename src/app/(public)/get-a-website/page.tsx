@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { CheckCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
@@ -25,9 +26,14 @@ type FormData = z.infer<typeof formSchema>;
 
 export default function GetAWebsitePage() {
   const { addToast } = useToast();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [referralData, setReferralData] = useState<{affiliateId: string | null, productId: string | null}>({
+    affiliateId: null,
+    productId: null,
+  });
 
   const {
     register,
@@ -37,18 +43,28 @@ export default function GetAWebsitePage() {
     resolver: zodResolver(formSchema),
   });
 
+  // Get referral data from URL
+  useEffect(() => {
+    const aff = searchParams.get("aff");
+    const prod = searchParams.get("prod");
+    
+    console.log("=== REFERRAL FROM URL ===");
+    console.log("Affiliate ID from URL:", aff);
+    console.log("Product ID from URL:", prod);
+    
+    if (aff && prod) {
+      setReferralData({ affiliateId: aff, productId: prod });
+      console.log("✓ Referral data captured from URL!");
+    }
+  }, [searchParams]);
+
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
     setErrorMessage("");
 
     console.log("=== FORM SUBMISSION DEBUG ===");
     console.log("Form data:", data);
-
-    // Check if referral cookie exists
-    const cookies = document.cookie;
-    console.log("All cookies:", cookies);
-    const referralCookie = cookies.split(';').find(c => c.trim().startsWith('webearn_ref='));
-    console.log("Referral cookie:", referralCookie || "NOT FOUND");
+    console.log("Referral data:", referralData);
 
     try {
       console.log("Sending request to /api/requests...");
@@ -57,7 +73,12 @@ export default function GetAWebsitePage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          // Include referral data in the request body
+          _affiliateId: referralData.affiliateId,
+          _productId: referralData.productId,
+        }),
       });
 
       console.log("Response status:", response.status);

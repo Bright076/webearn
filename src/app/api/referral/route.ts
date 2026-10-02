@@ -145,8 +145,13 @@ export async function GET(request: NextRequest) {
     console.log("✓ Cookie set successfully!");
   }
 
-  console.log("\n✓ Redirecting to /get-a-website");
+  console.log("\n✓ Redirecting to /get-a-website with URL parameters");
   console.log("========================================\n");
 
-  return response;
+  // Redirect with URL parameters instead of cookies (more reliable!)
+  const redirectUrl = new URL("/get-a-website", request.url);
+  redirectUrl.searchParams.set("aff", profile.id);
+  redirectUrl.searchParams.set("prod", product.id);
+
+  return NextResponse.redirect(redirectUrl);
 }
