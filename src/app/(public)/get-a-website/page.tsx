@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/toast";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,7 +24,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function GetAWebsitePage() {
+function GetAWebsiteForm() {
   const { addToast } = useToast();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -275,5 +275,25 @@ export default function GetAWebsitePage() {
         </div>
       </div>
     </>
+  );
+}
+
+// Wrap the form in Suspense and export as default
+export default function GetAWebsitePage() {
+  return (
+    <Suspense fallback={
+      <>
+        <MarketingNav />
+        <div className="min-h-screen bg-background py-12 px-4">
+          <div className="max-w-2xl mx-auto">
+            <div className="bg-white border border-border rounded-lg p-8">
+              <div className="text-center">Loading...</div>
+            </div>
+          </div>
+        </div>
+      </>
+    }>
+      <GetAWebsiteForm />
+    </Suspense>
   );
 }
