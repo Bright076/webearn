@@ -13,7 +13,6 @@ import { Copy, Check } from "lucide-react";
 
 const profileSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
-  whatsappNumber: z.string().min(10, "Valid WhatsApp number is required"),
   preferredPayoutMethod: z.enum(["usdt", "bank"]),
   // USDT fields
   usdtWalletAddress: z.string().optional(),
@@ -80,7 +79,6 @@ export default function ProfilePage() {
       setPayoutMethod(preferredMethod);
       reset({
         fullName: data.full_name || "",
-        whatsappNumber: data.whatsapp_number || "",
         preferredPayoutMethod: preferredMethod,
         usdtWalletAddress: data.usdt_wallet_address || "",
         usdtNetwork: data.usdt_network || "TRC20",
@@ -105,7 +103,6 @@ export default function ProfilePage() {
       .from("profiles")
       .update({
         full_name: data.fullName,
-        whatsapp_number: data.whatsappNumber,
         preferred_payout_method: data.preferredPayoutMethod,
         usdt_wallet_address: data.usdtWalletAddress || null,
         usdt_network: data.usdtNetwork || "TRC20",
@@ -229,21 +226,6 @@ export default function ProfilePage() {
               className="mt-1.5 bg-secondary/50"
             />
             <p className="text-xs text-muted mt-1">Email cannot be changed</p>
-          </div>
-
-          {/* WhatsApp Number */}
-          <div>
-            <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
-            <Input
-              id="whatsappNumber"
-              type="tel"
-              placeholder="+234 800 000 0000"
-              {...register("whatsappNumber")}
-              className="mt-1.5"
-            />
-            {errors.whatsappNumber && (
-              <p className="text-sm text-red-600 mt-1">{errors.whatsappNumber.message}</p>
-            )}
           </div>
 
           <div className="border-t border-border my-6" />
