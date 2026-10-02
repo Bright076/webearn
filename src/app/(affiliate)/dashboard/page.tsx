@@ -53,14 +53,14 @@ export default async function DashboardPage() {
     0
   ) || 0;
 
-  // Withdrawn Amount
-  const { data: completedWithdrawals } = await adminClient
+  // Withdrawn Amount (both approved and paid withdrawals)
+  const { data: processedWithdrawals } = await adminClient
     .from("withdrawals")
     .select("amount")
     .eq("affiliate_id", user.id)
-    .eq("status", "completed");
+    .in("status", ["approved", "paid"]);
 
-  const withdrawnTotal = completedWithdrawals?.reduce(
+  const withdrawnTotal = processedWithdrawals?.reduce(
     (sum, w) => sum + Number(w.amount),
     0
   ) || 0;

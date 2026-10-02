@@ -136,14 +136,15 @@ export default function WithdrawalsPage() {
     const totalApproved =
       approvedCommissions?.reduce((sum, c) => sum + Number(c.amount), 0) || 0;
 
-    const { data: completedWithdrawals } = await supabase
+    // Subtract withdrawals that are approved or paid (money already committed/sent)
+    const { data: processedWithdrawals } = await supabase
       .from("withdrawals")
       .select("amount")
       .eq("affiliate_id", user.id)
-      .eq("status", "completed");
+      .in("status", ["approved", "paid"]);
 
     const totalWithdrawn =
-      completedWithdrawals?.reduce((sum, w) => sum + Number(w.amount), 0) || 0;
+      processedWithdrawals?.reduce((sum, w) => sum + Number(w.amount), 0) || 0;
 
     setAvailableBalance(totalApproved - totalWithdrawn);
   }
