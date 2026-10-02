@@ -4,7 +4,7 @@
 
 1. **Profile Page** - Added USDT payout method selection with wallet address fields
 2. **Affiliate Withdrawals Page** - Complete USDT support with TRC20/BEP20 options
-3. **Minimum withdrawal** changed from $5 to $10
+3. **Minimum withdrawal** is $5
 
 ## What Still Needs to Be Done 🔧
 
@@ -70,7 +70,7 @@ In `webearn/src/app/(admin)/admin/withdrawals/WithdrawalsTable.tsx`:
 
 - USDT is now the **recommended default** method (works worldwide)
 - Bank transfer is **secondary/fallback** (may not work in all countries)
-- Minimum withdrawal is **$10** (previously $5)
+- Minimum withdrawal is **$5**
 - TRC20 is default network (lower fees than BEP20)
 - Wallet addresses are validated client-side with regex
 - Payment details are snapshot at withdrawal request time

@@ -1,5 +1,6 @@
 -- Add USDT payout support for worldwide affiliates
 -- Run this in Supabase SQL Editor
+-- Minimum withdrawal: $5
 
 -- Add USDT wallet columns to profiles
 ALTER TABLE profiles 
