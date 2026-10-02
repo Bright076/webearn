@@ -25,6 +25,9 @@ interface Withdrawal {
   created_at: string;
   processed_at: string | null;
   rejection_reason: string | null;
+  payout_method?: string;
+  wallet_address?: string | null;
+  network?: string | null;
   bank_snapshot: {
     bank_name: string;
     account_number: string;

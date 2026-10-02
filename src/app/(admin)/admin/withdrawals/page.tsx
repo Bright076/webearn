@@ -9,6 +9,9 @@ interface Withdrawal {
   processed_at: string | null;
   processed_by: string | null;
   rejection_reason: string | null;
+  payout_method?: string;
+  wallet_address?: string | null;
+  network?: string | null;
   bank_snapshot: {
     bank_name: string;
     account_number: string;
@@ -26,20 +29,17 @@ export default async function AdminWithdrawalsPage() {
   const adminClient = createAdminClient();
 
   // Fetch all withdrawals with related data
-  const { data: rawWithdrawals } = await adminClient
+  const { data: rawWithdrawals, error: fetchError } = await adminClient
     .from("withdrawals")
     .select(`
-      id,
-      amount,
-      status,
-      created_at,
-      processed_at,
-      processed_by,
-      rejection_reason,
-      bank_snapshot,
-      affiliate:profiles!withdrawals_affiliate_id_fkey(id, full_name, email, affiliate_code)
+      *,
+      profiles!affiliate_id(id, full_name, email, affiliate_code)
     `)
     .order("created_at", { ascending: false });
+
+  if (fetchError) {
+    console.error("Error fetching withdrawals:", fetchError);
+  }
 
   // Transform the data to match expected type
   const withdrawals: Withdrawal[] = (rawWithdrawals || []).map((withdrawal: any) => ({
@@ -50,10 +50,15 @@ export default async function AdminWithdrawalsPage() {
     processed_at: withdrawal.processed_at,
     processed_by: withdrawal.processed_by,
     rejection_reason: withdrawal.rejection_reason,
-    bank_snapshot: withdrawal.bank_snapshot,
-    affiliate: Array.isArray(withdrawal.affiliate) 
-      ? withdrawal.affiliate[0] || null 
-      : withdrawal.affiliate,
+    bank_snapshot: withdrawal.bank_snapshot || {
+      bank_name: withdrawal.bank_name,
+      account_number: withdrawal.bank_account_number,
+      account_name: withdrawal.bank_account_name,
+    },
+    payout_method: withdrawal.payout_method,
+    wallet_address: withdrawal.wallet_address,
+    network: withdrawal.network,
+    affiliate: withdrawal.profiles || null,
   }));
 
   // Calculate summary stats
