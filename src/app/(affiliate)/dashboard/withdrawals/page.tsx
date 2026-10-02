@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PackageOpen, Wallet } from "lucide-react";
+import { PackageOpen, Wallet, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,10 +16,39 @@ const withdrawalSchema = z.object({
   amount: z.string().refine(
     (val) => {
       const num = parseFloat(val);
-      return !isNaN(num) && num >= 5;
+      return !isNaN(num) && num >= 10;
     },
-    { message: "Minimum withdrawal amount is $5" }
+    { message: "Minimum withdrawal amount is $10" }
   ),
+  payoutMethod: z.enum(["usdt", "bank"]),
+  // USDT fields
+  usdtWalletAddress: z.string().optional(),
+  usdtNetwork: z.string().optional(),
+  // Bank fields
+  bankName: z.string().optional(),
+  bankAccountNumber: z.string().optional(),
+  bankAccountName: z.string().optional(),
+}).refine((data) => {
+  if (data.payoutMethod === "usdt") {
+    // TRC20 addresses start with T and are 34 characters
+    if (!data.usdtWalletAddress) return false;
+    const wallet = data.usdtWalletAddress.trim();
+    if (data.usdtNetwork === "TRC20") {
+      return wallet.startsWith("T") && wallet.length === 34;
+    }
+    // BEP20 addresses start with 0x and are 42 characters
+    if (data.usdtNetwork === "BEP20") {
+      return wallet.startsWith("0x") && wallet.length === 42;
+    }
+    return wallet.length > 20; // Basic validation
+  }
+  if (data.payoutMethod === "bank") {
+    return data.bankName && data.bankAccountNumber && data.bankAccountName;
+  }
+  return true;
+}, {
+  message: "Please provide valid payment details for your selected method",
+  path: ["payoutMethod"],
 });
 
 type WithdrawalFormData = z.infer<typeof withdrawalSchema>;
@@ -32,6 +61,7 @@ export default function WithdrawalsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [payoutMethod, setPayoutMethod] = useState<"usdt" | "bank">("usdt");
 
   const supabase = createClient();
 
@@ -41,8 +71,13 @@ export default function WithdrawalsPage() {
     formState: { errors },
     reset,
     watch,
+    setValue,
   } = useForm<WithdrawalFormData>({
     resolver: zodResolver(withdrawalSchema),
+    defaultValues: {
+      payoutMethod: "usdt",
+      usdtNetwork: "TRC20",
+    },
   });
 
   const amountValue = watch("amount");
@@ -50,6 +85,24 @@ export default function WithdrawalsPage() {
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // Pre-fill payment details from profile
+    if (profile) {
+      const preferredMethod = profile.preferred_payout_method || "usdt";
+      setPayoutMethod(preferredMethod);
+      setValue("payoutMethod", preferredMethod);
+      
+      if (preferredMethod === "usdt") {
+        setValue("usdtWalletAddress", profile.usdt_wallet_address || "");
+        setValue("usdtNetwork", profile.usdt_network || "TRC20");
+      } else {
+        setValue("bankName", profile.bank_name || "");
+        setValue("bankAccountNumber", profile.bank_account_number || "");
+        setValue("bankAccountName", profile.bank_account_name || "");
+      }
+    }
+  }, [profile, setValue]);
 
   async function fetchData() {
     const {
@@ -95,7 +148,7 @@ export default function WithdrawalsPage() {
     setAvailableBalance(totalApproved - totalWithdrawn);
   }
 
-  const onSubmit = async (data: WithdrawalFormData) => {
+  const onSubmit = async (data: WithdrawalFormData) {
     const amount = parseFloat(data.amount);
 
     // Validate against available balance
@@ -104,14 +157,17 @@ export default function WithdrawalsPage() {
       return;
     }
 
-    // Check if profile has bank details
-    if (
-      !profile?.bank_account_name ||
-      !profile?.bank_account_number ||
-      !profile?.bank_name
-    ) {
-      setErrorMessage("Please update your bank details in your profile first");
-      return;
+    // Validate payment details based on method
+    if (data.payoutMethod === "usdt") {
+      if (!data.usdtWalletAddress || data.usdtWalletAddress.trim().length === 0) {
+        setErrorMessage("Please provide a valid USDT wallet address");
+        return;
+      }
+    } else {
+      if (!data.bankName || !data.bankAccountNumber || !data.bankAccountName) {
+        setErrorMessage("Please fill in all bank details");
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -122,20 +178,36 @@ export default function WithdrawalsPage() {
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Create withdrawal request
-    const { error } = await supabase.from("withdrawals").insert({
+    // Create withdrawal request with snapshot of payment details
+    const withdrawalData: any = {
       affiliate_id: user.id,
       amount,
-      bank_account_name: profile.bank_account_name,
-      bank_account_number: profile.bank_account_number,
-      bank_name: profile.bank_name,
+      payout_method: data.payoutMethod,
       status: "pending",
-    });
+    };
+
+    if (data.payoutMethod === "usdt") {
+      withdrawalData.wallet_address = data.usdtWalletAddress;
+      withdrawalData.network = data.usdtNetwork;
+    } else {
+      withdrawalData.bank_snapshot = {
+        bank_name: data.bankName,
+        bank_account_number: data.bankAccountNumber,
+        bank_account_name: data.bankAccountName,
+      };
+      // Also store in individual columns for backwards compatibility
+      withdrawalData.bank_name = data.bankName;
+      withdrawalData.bank_account_number = data.bankAccountNumber;
+      withdrawalData.bank_account_name = data.bankAccountName;
+    }
+
+    const { error } = await supabase.from("withdrawals").insert(withdrawalData);
 
     setIsLoading(false);
 
     if (error) {
-      setErrorMessage("Failed to create withdrawal request");
+      console.error("Withdrawal error:", error);
+      setErrorMessage("Failed to create withdrawal request. Please try again.");
       return;
     }
 
@@ -162,6 +234,13 @@ export default function WithdrawalsPage() {
     }
   };
 
+  const getPayoutMethodBadge = (method: string) => {
+    if (method === "usdt") {
+      return <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200">USDT</Badge>;
+    }
+    return <Badge className="bg-blue-100 text-blue-800 border-blue-200">Bank</Badge>;
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -173,7 +252,7 @@ export default function WithdrawalsPage() {
         </div>
         <Button
           onClick={() => setIsOpen(true)}
-          disabled={availableBalance < 5}
+          disabled={availableBalance < 10}
           size="lg"
         >
           <Wallet className="w-4 h-4 mr-2" />
@@ -189,9 +268,9 @@ export default function WithdrawalsPage() {
             <p className="text-4xl font-heading font-bold">
               ${availableBalance.toLocaleString()}
             </p>
-            {availableBalance < 5 && (
+            {availableBalance < 10 && (
               <p className="text-sm text-primary-foreground/80 mt-2">
-                Minimum withdrawal: $5
+                Minimum withdrawal: $10
               </p>
             )}
           </div>
@@ -216,7 +295,7 @@ export default function WithdrawalsPage() {
               No Withdrawals Yet
             </p>
             <p className="text-muted text-center max-w-md mb-6">
-              Once you have $5 or more in approved commissions, you can request a withdrawal
+              Once you have $10 or more in approved commissions, you can request a withdrawal
             </p>
           </div>
         </div>
@@ -227,13 +306,16 @@ export default function WithdrawalsPage() {
               <thead className="bg-secondary/50 border-b border-border">
                 <tr>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-foreground">
-                    Date Requested
+                    Date
                   </th>
                   <th className="text-right px-6 py-4 text-sm font-semibold text-foreground">
                     Amount
                   </th>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-foreground">
-                    Bank Details
+                    Method
+                  </th>
+                  <th className="text-left px-6 py-4 text-sm font-semibold text-foreground">
+                    Payment Details
                   </th>
                   <th className="text-left px-6 py-4 text-sm font-semibold text-foreground">
                     Status
@@ -256,13 +338,27 @@ export default function WithdrawalsPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
+                      {getPayoutMethodBadge(withdrawal.payout_method || "bank")}
+                    </td>
+                    <td className="px-6 py-4">
                       <div className="text-sm">
-                        <p className="font-semibold text-foreground">
-                          {withdrawal.bank_account_name}
-                        </p>
-                        <p className="text-muted">
-                          {withdrawal.bank_name} • {withdrawal.bank_account_number}
-                        </p>
+                        {withdrawal.payout_method === "usdt" ? (
+                          <>
+                            <p className="font-semibold text-foreground font-mono text-xs">
+                              {withdrawal.wallet_address?.substring(0, 10)}...{withdrawal.wallet_address?.substring(withdrawal.wallet_address.length - 6)}
+                            </p>
+                            <p className="text-muted">{withdrawal.network || "TRC20"}</p>
+                          </>
+                        ) : (
+                          <>
+                            <p className="font-semibold text-foreground">
+                              {withdrawal.bank_account_name || withdrawal.bank_snapshot?.bank_account_name}
+                            </p>
+                            <p className="text-muted">
+                              {withdrawal.bank_name || withdrawal.bank_snapshot?.bank_name} • {withdrawal.bank_account_number || withdrawal.bank_snapshot?.bank_account_number}
+                            </p>
+                          </>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -283,7 +379,7 @@ export default function WithdrawalsPage() {
 
       {/* Withdrawal Request Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Request Withdrawal</DialogTitle>
           </DialogHeader>
@@ -295,11 +391,12 @@ export default function WithdrawalsPage() {
             )}
 
             <div>
-              <Label htmlFor="amount">Withdrawal Amount</Label>
+              <Label htmlFor="amount">Withdrawal Amount (USD)</Label>
               <Input
                 id="amount"
                 type="number"
-                placeholder="5000"
+                step="0.01"
+                placeholder="10.00"
                 {...register("amount")}
                 className="mt-1.5"
               />
@@ -316,19 +413,131 @@ export default function WithdrawalsPage() {
               </div>
             </div>
 
-            {profile && (
-              <div className="p-4 bg-secondary/50 rounded-lg">
-                <p className="text-sm font-semibold text-foreground mb-2">
-                  Payment will be sent to:
-                </p>
-                <p className="text-sm text-foreground">{profile.bank_account_name}</p>
-                <p className="text-sm text-muted">
-                  {profile.bank_name} • {profile.bank_account_number}
-                </p>
+            {/* Payout Method Selection */}
+            <div>
+              <Label className="mb-3 block">Payout Method</Label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPayoutMethod("usdt");
+                    setValue("payoutMethod", "usdt");
+                  }}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                    payoutMethod === "usdt"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold text-sm">USDT</span>
+                    {payoutMethod === "usdt" && <Check className="w-4 h-4 text-primary" />}
+                  </div>
+                  <p className="text-xs text-muted">TRC20/BEP20</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPayoutMethod("bank");
+                    setValue("payoutMethod", "bank");
+                  }}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                    payoutMethod === "bank"
+                      ? "border-primary bg-primary/5"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold text-sm">Bank</span>
+                    {payoutMethod === "bank" && <Check className="w-4 h-4 text-primary" />}
+                  </div>
+                  <p className="text-xs text-muted">Transfer</p>
+                </button>
+              </div>
+            </div>
+
+            <input type="hidden" {...register("payoutMethod")} value={payoutMethod} />
+
+            {/* USDT Fields */}
+            {payoutMethod === "usdt" && (
+              <div className="space-y-3 p-3 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <div>
+                  <Label htmlFor="usdtWalletAddress" className="text-xs">
+                    USDT Wallet Address *
+                  </Label>
+                  <Input
+                    id="usdtWalletAddress"
+                    type="text"
+                    placeholder="T... (TRC20) or 0x... (BEP20)"
+                    {...register("usdtWalletAddress")}
+                    className="mt-1.5 font-mono text-sm"
+                  />
+                  {errors.usdtWalletAddress && (
+                    <p className="text-xs text-red-600 mt-1">
+                      {errors.usdtWalletAddress.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="usdtNetwork" className="text-xs">Network *</Label>
+                  <select
+                    id="usdtNetwork"
+                    {...register("usdtNetwork")}
+                    className="mt-1.5 flex h-9 w-full rounded-lg border border-border bg-white px-3 py-2 text-sm"
+                  >
+                    <option value="TRC20">TRC20 (TRON) - Lower fees</option>
+                    <option value="BEP20">BEP20 (BSC)</option>
+                  </select>
+                </div>
               </div>
             )}
 
-            <div className="flex gap-3">
+            {/* Bank Fields */}
+            {payoutMethod === "bank" && (
+              <div className="space-y-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-xs text-muted mb-2">
+                  ⚠️ Bank transfers may not be available in all countries
+                </p>
+                <div>
+                  <Label htmlFor="bankName" className="text-xs">Bank Name *</Label>
+                  <Input
+                    id="bankName"
+                    type="text"
+                    placeholder="Bank name"
+                    {...register("bankName")}
+                    className="mt-1.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bankAccountNumber" className="text-xs">Account Number *</Label>
+                  <Input
+                    id="bankAccountNumber"
+                    type="text"
+                    placeholder="Account number"
+                    {...register("bankAccountNumber")}
+                    className="mt-1.5 text-sm"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="bankAccountName" className="text-xs">Account Name *</Label>
+                  <Input
+                    id="bankAccountName"
+                    type="text"
+                    placeholder="Account holder name"
+                    {...register("bankAccountName")}
+                    className="mt-1.5 text-sm"
+                  />
+                </div>
+              </div>
+            )}
+
+            {errors.payoutMethod && (
+              <p className="text-sm text-red-600">{errors.payoutMethod.message}</p>
+            )}
+
+            <div className="flex gap-3 pt-2">
               <Button
                 type="button"
                 variant="outline"
