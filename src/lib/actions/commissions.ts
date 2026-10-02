@@ -28,13 +28,14 @@ export async function approveCommission(commissionId: string) {
     }
 
     // Get commission details
-    const { data: commission } = await adminClient
+    const { data: commission, error: fetchError } = await adminClient
       .from("commissions")
-      .select("request_id")
+      .select("client_request_id")
       .eq("id", commissionId)
       .single();
 
-    if (!commission) {
+    if (fetchError || !commission) {
+      console.error("Error fetching commission:", fetchError);
       return { error: "Commission not found" };
     }
 
@@ -42,7 +43,7 @@ export async function approveCommission(commissionId: string) {
     const { data: request } = await adminClient
       .from("client_requests")
       .select("status")
-      .eq("id", commission.request_id)
+      .eq("id", commission.client_request_id)
       .single();
 
     if (request?.status !== "paid") {
