@@ -20,8 +20,8 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "WebEarn - Get a Professional Website or Earn Money by Referring Clients",
-  description: "We build high-quality websites for Nigerian businesses. Know someone who needs one? Refer them and earn commission up to 30%.",
+  title: "WebEarn - Professional Website Development & Affiliate Partnership Program",
+  description: "Get a high-quality professional website for your business or join our affiliate program to earn commission by referring clients worldwide.",
 };
 
 export default async function HomePage() {
@@ -49,20 +49,20 @@ export default async function HomePage() {
       <section className="py-20 lg:py-32 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 leading-tight">
-            Get a Professional Website or Earn Money by Referring Clients
+            Professional Websites. Rewarding Partnerships.
           </h1>
           <p className="text-xl text-muted mb-10 max-w-3xl mx-auto">
-            We build high-quality websites for Nigerian businesses. Know someone who needs one? Refer them and earn commission.
+            Get a stunning, high-performance website for your business or join our global affiliate program to earn substantial commissions by connecting us with clients.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/get-a-website">
               <Button size="lg" className="w-full sm:w-auto text-lg px-8">
-                Get a Website
+                Request a Website
               </Button>
             </Link>
             <Link href="/sign-up">
               <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 border-primary text-primary hover:bg-primary hover:text-white">
-                Become an Affiliate
+                Join as Partner
               </Button>
             </Link>
           </div>
@@ -115,7 +115,7 @@ export default async function HomePage() {
             {/* For Affiliates */}
             <div className="bg-white border border-border rounded-lg p-8">
               <h3 className="text-2xl font-heading font-semibold mb-6">
-                For Affiliates
+                For Partners
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -123,8 +123,8 @@ export default async function HomePage() {
                     1
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">Sign up free</h4>
-                    <p className="text-muted text-sm">Create your affiliate account in minutes</p>
+                    <h4 className="font-semibold mb-1">Register your account</h4>
+                    <p className="text-muted text-sm">Quick and free registration process</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -132,8 +132,8 @@ export default async function HomePage() {
                     2
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">Share your link</h4>
-                    <p className="text-muted text-sm">Promote services to your network</p>
+                    <h4 className="font-semibold mb-1">Share your referral link</h4>
+                    <p className="text-muted text-sm">Connect us with businesses needing websites</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -142,7 +142,7 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <h4 className="font-semibold mb-1">Earn commission</h4>
-                    <p className="text-muted text-sm">Get paid for every successful referral</p>
+                    <p className="text-muted text-sm">Receive payment for successful conversions</p>
                   </div>
                 </div>
               </div>
@@ -170,19 +170,19 @@ export default async function HomePage() {
             <div className="bg-white border border-border rounded-lg p-6">
               <DollarSign className="w-10 h-10 text-primary mb-4" />
               <h3 className="text-xl font-heading font-semibold mb-2">
-                Fair Commissions
+                Competitive Commissions
               </h3>
               <p className="text-muted text-sm">
-                Earn up to 30% on every successful referral
+                Earn up to 30% on every successful client conversion
               </p>
             </div>
             <div className="bg-white border border-border rounded-lg p-6">
               <Globe className="w-10 h-10 text-primary mb-4" />
               <h3 className="text-xl font-heading font-semibold mb-2">
-                Nigerian-Focused
+                Global Reach
               </h3>
               <p className="text-muted text-sm">
-                Built for the Nigerian market and payment methods
+                Serving clients worldwide with international payment options
               </p>
             </div>
             <div className="bg-white border border-border rounded-lg p-6">
@@ -274,24 +274,24 @@ export default async function HomePage() {
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-heading font-bold text-center mb-12">
-            What People Say
+            Client Testimonials
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                quote: "The affiliate program is straightforward and the commissions are paid on time. Highly recommend!",
-                name: "Chioma A.",
-                role: "Affiliate Partner",
+                quote: "The affiliate program is well-structured and payments are consistently processed on schedule. Highly professional experience.",
+                name: "Sarah K.",
+                role: "Partner • Digital Marketing",
               },
               {
-                quote: "They built a beautiful website for my restaurant. The process was smooth and professional.",
-                name: "Ibrahim M.",
-                role: "Restaurant Owner",
+                quote: "Exceptional website design for my business. The development process was seamless and the final product exceeded expectations.",
+                name: "Michael C.",
+                role: "Client • E-commerce",
               },
               {
-                quote: "I've earned over $1,500 in commissions just by sharing with my network. Amazing opportunity!",
-                name: "Tunde O.",
-                role: "Top Affiliate",
+                quote: "I've generated over $2,000 in commissions simply by recommending their services. Outstanding partnership opportunity.",
+                name: "James R.",
+                role: "Partner • Top Performer",
               },
             ].map((testimonial, idx) => (
               <div key={idx} className="bg-white border border-border rounded-lg p-6">
@@ -318,10 +318,10 @@ export default async function HomePage() {
           <Accordion>
             <AccordionItem value="payment">
               <AccordionTrigger value="payment">
-                How do I get paid?
+                What payment methods do you accept?
               </AccordionTrigger>
               <AccordionContent value="payment">
-                Affiliates are paid via bank transfer once you reach the minimum withdrawal threshold of $5. Payments are processed within 7 business days of withdrawal request.
+                We accept bank transfers, credit/debit cards, and cryptocurrency (USDT). Partners receive payouts via USDT (TRC20/BEP20) or international bank transfer once the minimum threshold of $5 is reached. All payments are processed within 5-7 business days.
               </AccordionContent>
             </AccordionItem>
 
@@ -336,28 +336,28 @@ export default async function HomePage() {
 
             <AccordionItem value="website">
               <AccordionTrigger value="website">
-                Do I need a website to become an affiliate?
+                Do I need a website to join the partner program?
               </AccordionTrigger>
               <AccordionContent value="website">
-                No, you don't need a website. You can share your affiliate link via WhatsApp, social media, email, or any other channel. We provide marketing materials to help you promote.
+                No website required. Share your unique referral link through any channel: social media, email, messaging apps, or in-person networking. We provide comprehensive marketing materials and tracking tools to support your success.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="whatsapp">
               <AccordionTrigger value="whatsapp">
-                What if I don't have a WhatsApp number?
+                What communication channels do you support?
               </AccordionTrigger>
               <AccordionContent value="whatsapp">
-                While WhatsApp is our primary communication channel, we can accommodate other methods like email or phone calls. However, WhatsApp is recommended for faster response times.
+                We primarily use WhatsApp for fast, efficient communication, but also support email, phone, and video conferencing for client consultations. Choose the channel that works best for you and your clients.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="multiple">
               <AccordionTrigger value="multiple">
-                Can I promote more than one product?
+                Are there limits on referrals or products?
               </AccordionTrigger>
               <AccordionContent value="multiple">
-                Yes! You can promote as many products and services as you like. There's no limit to how many referrals you can make or how much you can earn.
+                No limits whatsoever. Promote any combination of our services, make unlimited referrals, and earn uncapped commissions. Your success is our success, and we encourage you to maximize your earning potential.
               </AccordionContent>
             </AccordionItem>
           </Accordion>
@@ -371,7 +371,7 @@ export default async function HomePage() {
             <div>
               <Logo size="sm" />
               <p className="text-white/70 mt-4 text-sm">
-                Professional websites and rewarding affiliate opportunities for Nigerian businesses.
+                Professional website development and rewarding affiliate opportunities for businesses worldwide.
               </p>
             </div>
             <div>
@@ -391,10 +391,10 @@ export default async function HomePage() {
               </ul>
             </div>
             <div>
-              <h3 className="font-heading font-semibold mb-4">For Affiliates</h3>
+              <h3 className="font-heading font-semibold mb-4">For Partners</h3>
               <ul className="space-y-2 text-sm">
-                <li><Link href="/sign-up" className="text-white/70 hover:text-white">Sign Up</Link></li>
-                <li><Link href="/sign-in" className="text-white/70 hover:text-white">Sign In</Link></li>
+                <li><Link href="/sign-up" className="text-white/70 hover:text-white">Join Program</Link></li>
+                <li><Link href="/sign-in" className="text-white/70 hover:text-white">Partner Login</Link></li>
                 <li><Link href="/dashboard" className="text-white/70 hover:text-white">Dashboard</Link></li>
               </ul>
             </div>

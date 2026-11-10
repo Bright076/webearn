@@ -173,7 +173,7 @@ function GetAWebsiteForm() {
                 <Input
                   id="whatsappNumber"
                   type="tel"
-                  placeholder="+234 800 000 0000"
+                  placeholder="+1 234 567 8900"
                   {...register("whatsappNumber")}
                   className="mt-1.5"
                 />

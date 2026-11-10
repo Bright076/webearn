@@ -332,7 +332,7 @@ export default function ProfilePage() {
                 <Input
                   id="bankName"
                   type="text"
-                  placeholder="e.g. First Bank, GT Bank, Access Bank"
+                  placeholder="e.g. Chase, Bank of America, HSBC"
                   {...register("bankName")}
                   className="mt-1.5"
                 />

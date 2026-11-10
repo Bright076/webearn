@@ -11,7 +11,7 @@ DROP CONSTRAINT IF EXISTS withdrawals_status_check;
 ALTER TABLE withdrawals 
 ADD CONSTRAINT withdrawals_status_check 
 CHECK (status IN ('pending', 'approved', 'paid', 'rejected'));
-
+  
 -- Migrate any old 'completed' or 'processing' statuses (if any exist)
 UPDATE withdrawals 
 SET status = 'paid' 
