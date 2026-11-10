@@ -20,7 +20,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "WebEarn - Professional Website Development & Affiliate Partnership Program",
+  title: "WebEarn - Professional Website Development & Affiliate Program",
   description: "Get a high-quality professional website for your business or join our affiliate program to earn commission by referring clients worldwide.",
 };
 
@@ -49,10 +49,10 @@ export default async function HomePage() {
       <section className="py-20 lg:py-32 px-4">
         <div className="max-w-5xl mx-auto text-center">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold text-foreground mb-6 leading-tight">
-            Professional Websites. Rewarding Partnerships.
+            Build Websites. Earn Through Referrals.
           </h1>
           <p className="text-xl text-muted mb-10 max-w-3xl mx-auto">
-            Get a stunning, high-performance website for your business or join our global affiliate program to earn substantial commissions by connecting us with clients.
+            WebEarn connects businesses looking for professional websites with affiliates who earn commissions by bringing them customers.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/get-a-website">
@@ -62,7 +62,7 @@ export default async function HomePage() {
             </Link>
             <Link href="/sign-up">
               <Button size="lg" variant="outline" className="w-full sm:w-auto text-lg px-8 border-primary text-primary hover:bg-primary hover:text-white">
-                Join as Partner
+                Become an Affiliate
               </Button>
             </Link>
           </div>
@@ -115,7 +115,7 @@ export default async function HomePage() {
             {/* For Affiliates */}
             <div className="bg-white border border-border rounded-lg p-8">
               <h3 className="text-2xl font-heading font-semibold mb-6">
-                For Partners
+                For Affiliates
               </h3>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -281,7 +281,7 @@ export default async function HomePage() {
               {
                 quote: "The affiliate program is well-structured and payments are consistently processed on schedule. Highly professional experience.",
                 name: "Sarah K.",
-                role: "Partner • Digital Marketing",
+                role: "Affiliate • Digital Marketing",
               },
               {
                 quote: "Exceptional website design for my business. The development process was seamless and the final product exceeded expectations.",
@@ -289,9 +289,9 @@ export default async function HomePage() {
                 role: "Client • E-commerce",
               },
               {
-                quote: "I've generated over $2,000 in commissions simply by recommending their services. Outstanding partnership opportunity.",
+                quote: "I've generated over $2,000 in commissions simply by recommending their services. Outstanding affiliate opportunity.",
                 name: "James R.",
-                role: "Partner • Top Performer",
+                role: "Affiliate • Top Performer",
               },
             ].map((testimonial, idx) => (
               <div key={idx} className="bg-white border border-border rounded-lg p-6">
@@ -321,7 +321,7 @@ export default async function HomePage() {
                 What payment methods do you accept?
               </AccordionTrigger>
               <AccordionContent value="payment">
-                We accept bank transfers, credit/debit cards, and cryptocurrency (USDT). Partners receive payouts via USDT (TRC20/BEP20) or international bank transfer once the minimum threshold of $5 is reached. All payments are processed within 5-7 business days.
+                We accept bank transfers, credit/debit cards, and cryptocurrency (USDT). Affiliates receive payouts via USDT (TRC20/BEP20) or international bank transfer once the minimum threshold of $5 is reached. All payments are processed within 5-7 business days.
               </AccordionContent>
             </AccordionItem>
 
@@ -336,7 +336,7 @@ export default async function HomePage() {
 
             <AccordionItem value="website">
               <AccordionTrigger value="website">
-                Do I need a website to join the partner program?
+                Do I need a website to join the affiliate program?
               </AccordionTrigger>
               <AccordionContent value="website">
                 No website required. Share your unique referral link through any channel: social media, email, messaging apps, or in-person networking. We provide comprehensive marketing materials and tracking tools to support your success.
@@ -391,10 +391,10 @@ export default async function HomePage() {
               </ul>
             </div>
             <div>
-              <h3 className="font-heading font-semibold mb-4">For Partners</h3>
+              <h3 className="font-heading font-semibold mb-4">For Affiliates</h3>
               <ul className="space-y-2 text-sm">
                 <li><Link href="/sign-up" className="text-white/70 hover:text-white">Join Program</Link></li>
-                <li><Link href="/sign-in" className="text-white/70 hover:text-white">Partner Login</Link></li>
+                <li><Link href="/sign-in" className="text-white/70 hover:text-white">Affiliate Login</Link></li>
                 <li><Link href="/dashboard" className="text-white/70 hover:text-white">Dashboard</Link></li>
               </ul>
             </div>
