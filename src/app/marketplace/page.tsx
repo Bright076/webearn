@@ -270,14 +270,15 @@ export default async function MarketplacePage() {
         )}
 
         {/* Tabs */}
-        <Tabs defaultValue="all" className="space-y-8">
-          <TabsList className="w-full sm:w-auto">
-            <TabsTrigger value="all" className="flex-1 sm:flex-none">
-              All Products ({products?.length || 0})
-            </TabsTrigger>
-            {services.length > 0 && (
-              <TabsTrigger value="services" className="flex-1 sm:flex-none">
-                Services ({services.length})
+        <div className="space-y-8">
+          <Tabs defaultValue="all">
+            <TabsList className="w-full sm:w-auto">
+              <TabsTrigger value="all" className="flex-1 sm:flex-none">
+                All Products ({products?.length || 0})
+              </TabsTrigger>
+              {services.length > 0 && (
+                <TabsTrigger value="services" className="flex-1 sm:flex-none">
+                  Services ({services.length})
               </TabsTrigger>
             )}
             {templates.length > 0 && (
@@ -334,7 +335,8 @@ export default async function MarketplacePage() {
               </div>
             )}
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        </div>
 
         {/* CTA Section */}
         {products && products.length > 0 && (
