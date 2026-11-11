@@ -49,9 +49,11 @@ export function TabsList({
 export function TabsTrigger({
   value,
   children,
+  className,
 }: {
   value: string;
   children: React.ReactNode;
+  className?: string;
 }) {
   const { activeTab, setActiveTab } = React.useContext(TabsContext);
   const isActive = activeTab === value;
@@ -63,7 +65,8 @@ export function TabsTrigger({
         "inline-flex items-center justify-center whitespace-nowrap rounded-md px-6 py-1.5 text-sm font-medium transition-all",
         isActive
           ? "bg-white text-foreground shadow-sm"
-          : "text-muted hover:text-foreground"
+          : "text-muted hover:text-foreground",
+        className
       )}
     >
       {children}
