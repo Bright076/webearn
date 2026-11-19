@@ -12,6 +12,7 @@ export function MarketingNav() {
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/marketplace", label: "Marketplace" },
+    { href: "/affiliate-program", label: "Affiliate Program" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];

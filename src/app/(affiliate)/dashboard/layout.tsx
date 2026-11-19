@@ -13,6 +13,7 @@ import {
   DollarSign,
   Wallet,
   UserCircle,
+  HelpCircle,
 } from "lucide-react";
 
 export default async function DashboardLayout({
@@ -55,6 +56,7 @@ export default async function DashboardLayout({
     { href: "/dashboard/earnings", label: "Earnings", icon: DollarSign },
     { href: "/dashboard/withdrawals", label: "Withdrawals", icon: Wallet },
     { href: "/dashboard/profile", label: "Profile", icon: UserCircle },
+    { href: "/dashboard/help", label: "Help", icon: HelpCircle },
   ];
 
   return (
