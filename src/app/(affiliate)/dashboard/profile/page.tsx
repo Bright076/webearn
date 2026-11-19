@@ -4,12 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/client";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, User, Mail, Wallet, Shield, XCircle } from "lucide-react";
 
 const profileSchema = z.object({
   fullName: z.string().min(2, "Full name is required"),
@@ -136,68 +137,97 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl space-y-8">
-      <div>
-        <h1 className="text-3xl font-heading font-bold text-foreground mb-2">
-          Profile Settings
-        </h1>
-        <p className="text-muted">
-          Update your personal information and payment details
-        </p>
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <div className="p-3 rounded-xl bg-primary/10">
+          <User className="w-8 h-8 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-heading font-bold text-foreground mb-1">
+            Profile Settings
+          </h1>
+          <p className="text-muted">
+            Update your personal information and payment details
+          </p>
+        </div>
       </div>
 
       {/* Affiliate Code Card */}
       {profile?.affiliate_code && (
-        <div className="bg-gradient-to-br from-primary/10 to-accent/10 border border-border rounded-lg p-6">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <h3 className="font-heading font-bold text-foreground mb-1">
-                Your Affiliate Code
-              </h3>
-              <p className="text-sm text-muted">
-                This is your unique identifier for referral tracking
-              </p>
+        <Card className="bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 border-primary/20">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-lg bg-primary/20">
+                  <Shield className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-bold text-foreground mb-0.5">
+                    Your Affiliate Code
+                  </h3>
+                  <p className="text-sm text-muted">
+                    Unique identifier for referral tracking
+                  </p>
+                </div>
+              </div>
+              <Badge variant="default">Active</Badge>
             </div>
-            <Badge className="bg-primary text-white">Active</Badge>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex-1 bg-white border border-border rounded-lg px-4 py-3">
-              <code className="text-lg font-mono font-bold text-foreground">
-                {profile.affiliate_code}
-              </code>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 bg-white border border-border rounded-lg px-4 py-3 shadow-sm">
+                <code className="text-lg font-mono font-bold text-foreground">
+                  {profile.affiliate_code}
+                </code>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={copyAffiliateCode}
+                className="flex-shrink-0"
+              >
+                {copiedCode ? (
+                  <Check className="w-4 h-4 text-success" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </Button>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={copyAffiliateCode}
-              className="flex-shrink-0"
-            >
-              {copiedCode ? (
-                <Check className="w-4 h-4 text-primary" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
       {successMessage && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-          <p className="text-sm text-emerald-800">{successMessage}</p>
-        </div>
+        <Card className="border-success/30 bg-success/5">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Check className="w-5 h-5 text-success" />
+              <p className="text-sm font-medium text-success">{successMessage}</p>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {errorMessage && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-sm text-red-600">{errorMessage}</p>
-        </div>
+        <Card className="border-destructive/30 bg-destructive/5">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <XCircle className="w-5 h-5 text-destructive" />
+              <p className="text-sm font-medium text-destructive">{errorMessage}</p>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Profile Form */}
-      <div className="bg-white border border-border rounded-lg p-6">
-        <h2 className="text-xl font-heading font-bold text-foreground mb-6">
-          Personal Information
-        </h2>
+      <Card>
+        <CardHeader className="border-b border-border">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-secondary">
+              <User className="w-5 h-5 text-foreground" />
+            </div>
+            <CardTitle className="text-xl">Personal Information</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6">
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           {/* Full Name */}
@@ -217,7 +247,10 @@ export default function ProfilePage() {
 
           {/* Email (Read Only) */}
           <div>
-            <Label htmlFor="email">Email Address</Label>
+            <Label htmlFor="email" className="flex items-center gap-2">
+              <Mail className="w-4 h-4" />
+              Email Address
+            </Label>
             <Input
               id="email"
               type="email"
@@ -230,12 +263,19 @@ export default function ProfilePage() {
 
           <div className="border-t border-border my-6" />
 
-          <h3 className="text-lg font-heading font-bold text-foreground mb-2">
-            Payout Method
-          </h3>
-          <p className="text-sm text-muted mb-4">
-            Choose how you want to receive your earnings
-          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 rounded-lg bg-accent/10">
+              <Wallet className="w-5 h-5 text-accent" />
+            </div>
+            <div>
+              <h3 className="text-lg font-heading font-bold text-foreground">
+                Payout Method
+              </h3>
+              <p className="text-sm text-muted">
+                Choose how you want to receive your earnings
+              </p>
+            </div>
+          </div>
 
           {/* Payout Method Toggle */}
           <div className="grid grid-cols-2 gap-4 mb-6">
@@ -379,11 +419,12 @@ export default function ProfilePage() {
             <p className="text-sm text-red-600 mt-2">{errors.preferredPayoutMethod.message}</p>
           )}
 
-          <Button type="submit" disabled={isLoading} size="lg" className="w-full">
+          <Button type="submit" disabled={isLoading} size="lg" className="w-full mt-2">
             {isLoading ? "Saving..." : "Save Changes"}
           </Button>
         </form>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
