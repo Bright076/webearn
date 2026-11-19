@@ -100,7 +100,7 @@ export default function HelpPage() {
           <BookOpen className="w-8 h-8 text-primary" />
         </div>
         <div>
-          <h1 className="text-3xl font-heading font-bold text-foreground mb-1">
+          <h1 className="text-2xl font-heading font-bold text-foreground mb-1">
             Help & Resources
           </h1>
           <p className="text-muted">

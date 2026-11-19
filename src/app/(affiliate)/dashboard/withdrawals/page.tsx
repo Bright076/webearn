@@ -246,7 +246,7 @@ export default function WithdrawalsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-foreground mb-2">
+          <h1 className="text-2xl font-heading font-bold text-foreground mb-2">
             Withdrawals
           </h1>
           <p className="text-muted">Request payouts and track your withdrawal history</p>

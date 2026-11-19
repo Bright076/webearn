@@ -121,7 +121,7 @@ export default async function DashboardPage() {
       {/* Welcome Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-foreground mb-2">
+          <h1 className="text-2xl font-heading font-bold text-foreground mb-2">
             Welcome back{profile?.full_name ? `, ${profile.full_name}` : ""}!
           </h1>
           <p className="text-muted">

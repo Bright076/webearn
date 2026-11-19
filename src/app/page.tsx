@@ -600,7 +600,7 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <Logo size="sm" />
+              <Logo size="sm" variant="light" />
               <p className="text-white/70 mt-4 text-sm leading-relaxed">
                 Professional website development and rewarding affiliate opportunities for businesses worldwide.
               </p>
@@ -610,6 +610,7 @@ export default async function HomePage() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/" className="text-white/70 hover:text-white transition-colors">Home</Link></li>
                 <li><Link href="/marketplace" className="text-white/70 hover:text-white transition-colors">Marketplace</Link></li>
+                <li><Link href="/affiliate-program" className="text-white/70 hover:text-white transition-colors">Affiliate Program</Link></li>
                 <li><Link href="/about" className="text-white/70 hover:text-white transition-colors">About</Link></li>
                 <li><Link href="/contact" className="text-white/70 hover:text-white transition-colors">Contact</Link></li>
               </ul>
@@ -626,7 +627,7 @@ export default async function HomePage() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/sign-up" className="text-white/70 hover:text-white transition-colors">Join Program</Link></li>
                 <li><Link href="/sign-in" className="text-white/70 hover:text-white transition-colors">Affiliate Login</Link></li>
-                <li><Link href="/dashboard" className="text-white/70 hover:text-white transition-colors">Dashboard</Link></li>
+                <li><Link href="/affiliate-program" className="text-white/70 hover:text-white transition-colors">Learn More</Link></li>
               </ul>
             </div>
           </div>
